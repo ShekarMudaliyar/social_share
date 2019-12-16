@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+- Added share on Instagram story.
+- Added share on Facebook story.
