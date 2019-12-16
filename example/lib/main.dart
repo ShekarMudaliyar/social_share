@@ -22,11 +22,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initPlatformState() async {
     String platformVersion;
-    try {
-      platformVersion = await SocialShare.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+
     if (!mounted) return;
 
     setState(() {
@@ -82,6 +78,18 @@ class _MyAppState extends State<MyApp> {
                     });
                   },
                   child: Text("Share On Facebook Story"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.copyToClipboard(
+                        "This is Social Share plugin",
+                      ).then((data) {
+                        print(data);
+                      });
+                    });
+                  },
+                  child: Text("Copy to clipboard"),
                 )
               ],
             ),

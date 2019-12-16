@@ -10,9 +10,7 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  }else if([@"shareInstagramStory" isEqualToString:call.method]){
+    if([@"shareInstagramStory" isEqualToString:call.method]){
       NSString *stickerImage = call.arguments[@"stickerImage"];
       NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
       NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
@@ -39,12 +37,12 @@
              [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
                  
                [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                 result([NSNumber numberWithBool:YES]);
+                 result(@"sharing");
            } else {
-               result([NSNumber numberWithBool:NO]);
+               result(@"this only supports iOS 10+");
            }
        } else {
-           result([NSNumber numberWithBool:NO]);
+           result(@"not supported or no facebook installed");
        }
   }else if([@"shareFacebookStory" isEqualToString:call.method]){
       NSString *stickerImage = call.arguments[@"stickerImage"];
@@ -74,13 +72,18 @@
                   [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
                       
                     [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                      result([NSNumber numberWithBool:YES]);
+                      result(@"sharing");
                 } else {
-                    result([NSNumber numberWithBool:NO]);
+                    result(@"this only supports iOS 10+");
                 }
             } else {
-                result([NSNumber numberWithBool:NO]);
+                result(@"not supported or no facebook installed");
             }
+  }else if([@"copyToClipboard" isEqualToString:call.method]){
+      NSString *content = call.arguments[@"content"];
+      UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+      pasteboard.string = content;
+      result([NSNumber numberWithBool:YES]);
   } else {
     result(FlutterMethodNotImplemented);
   }

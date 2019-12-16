@@ -17,8 +17,5 @@ dev_dependencies:
 
 flutter:
   plugin:
-    android:
-      androidPackage: com.shekarmudaliyar.social_share
-      pluginClass: SocialSharePlugin
-    ios:
-      pluginClass: SocialSharePlugin
+    androidPackage: com.shekarmudaliyar.social_share
+    pluginClass: SocialSharePlugin

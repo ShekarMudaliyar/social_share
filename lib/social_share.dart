@@ -4,12 +4,7 @@ import 'package:flutter/services.dart';
 class SocialShare {
   static const MethodChannel _channel = const MethodChannel('social_share');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
-  static Future<bool> shareInstagramStory(
+  static Future<String> shareInstagramStory(
       String stickerImage,
       String backgroundTopColor,
       String backgroundBottomColor,
@@ -21,13 +16,13 @@ class SocialShare {
       "attributionURL": attributionURL
     };
 
-    final bool response =
+    final String response =
         await _channel.invokeMethod('shareInstagramStory', args);
 
     return response;
   }
 
-  static Future<bool> shareFacebookStory(
+  static Future<String> shareFacebookStory(
       String stickerImage,
       String backgroundTopColor,
       String backgroundBottomColor,
@@ -41,7 +36,7 @@ class SocialShare {
       "appID": appID
     };
 
-    final bool response =
+    final String response =
         await _channel.invokeMethod('shareFacebookStory', args);
     return response;
   }
@@ -71,7 +66,11 @@ class SocialShare {
     return version;
   }
 
-  static Future<bool> copyLink(text) async {
-    return true;
+  static Future<bool> copyToClipboard(content) async {
+    final Map<String, String> args = <String, String>{
+      "content": content.toString()
+    };
+    final bool response = await _channel.invokeMethod('copyToClipboard', args);
+    return response;
   }
 }
