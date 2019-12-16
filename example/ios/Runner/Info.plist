@@ -5,6 +5,8 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 	<string>instagram-stories</string>
+	<string>facebook-stories</string>
+	<string>facebook</string>
 	<string>instagram</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

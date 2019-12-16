@@ -14,21 +14,25 @@
     result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
   }else if([@"shareInstagramStory" isEqualToString:call.method]){
       NSString *stickerImage = call.arguments[@"stickerImage"];
+      NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
+      NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
+      NSString *attributionURL = call.arguments[@"attributionURL"];
 
-      NSURL *myImgUrl = [NSURL URLWithString:stickerImage];
-      NSData * imageData = [[NSData alloc] initWithContentsOfURL: myImgUrl];
       NSFileManager *fileManager = [NSFileManager defaultManager];
       BOOL isFileExist = [fileManager fileExistsAtPath: stickerImage];
       UIImage *imgShare;
       if (isFileExist) {
-//           imgShare = [[UIImage alloc] initWithData:imageData];
           imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
       }
       NSURL *urlScheme = [NSURL URLWithString:@"instagram-stories://share"];
        if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
 
              // Assign background image asset and attribution link URL to pasteboard
-             NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.stickerImage" : imgShare}];
+             NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.stickerImage" : imgShare,
+                                            @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
+                                            @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
+                                            @"com.instagram.sharedSticker.contentURL" : attributionURL
+             }];
              if (@available(iOS 10.0, *)) {
              NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
              // This call is iOS 10+, can use 'setItems' depending on what versions you support
@@ -37,13 +41,46 @@
                [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
                  result([NSNumber numberWithBool:YES]);
            } else {
-result([NSNumber numberWithBool:NO]);
-               
+               result([NSNumber numberWithBool:NO]);
            }
        } else {
-result([NSNumber numberWithBool:NO]);
-           
+           result([NSNumber numberWithBool:NO]);
        }
+  }else if([@"shareFacebookStory" isEqualToString:call.method]){
+      NSString *stickerImage = call.arguments[@"stickerImage"];
+      NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
+      NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
+      NSString *attributionURL = call.arguments[@"attributionURL"];
+      NSString *appID = call.arguments[@"appID"];
+
+           NSFileManager *fileManager = [NSFileManager defaultManager];
+           BOOL isFileExist = [fileManager fileExistsAtPath: stickerImage];
+           UIImage *imgShare;
+           if (isFileExist) {
+               imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
+           }
+           NSURL *urlScheme = [NSURL URLWithString:@"facebook-stories://share"];
+            if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
+
+                  // Assign background image asset and attribution link URL to pasteboard
+                 NSArray *pasteboardItems = @[@{@"com.facebook.sharedSticker.stickerImage" : imgShare,
+                                                @"com.facebook.sharedSticker.backgroundTopColor" : backgroundTopColor,
+                                                @"com.facebook.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
+                                                @"com.facebook.sharedSticker.contentURL" : attributionURL,
+                                                @"com.facebook.sharedSticker.appID" : appID}];
+                  if (@available(iOS 10.0, *)) {
+                  NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
+                  // This call is iOS 10+, can use 'setItems' depending on what versions you support
+                  [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
+                      
+                    [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
+                      result([NSNumber numberWithBool:YES]);
+                } else {
+                    result([NSNumber numberWithBool:NO]);
+                }
+            } else {
+                result([NSNumber numberWithBool:NO]);
+            }
   } else {
     result(FlutterMethodNotImplemented);
   }

@@ -45,26 +45,46 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Screenshot(
           controller: screenshotController,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                'Running on: $_platformVersion\n',
-                textAlign: TextAlign.center,
-              ),
-              RaisedButton(
-                onPressed: () async {
-                  await screenshotController.capture().then((image) async {
-                    SocialShare.shareInstagramStory(image.path, "", "", "")
-                        .then((data) {
-                      print(data);
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  'Running on: $_platformVersion\n',
+                  textAlign: TextAlign.center,
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.shareInstagramStory(image.path, "#ffffff",
+                              "#000000", "https://deep-link-url")
+                          .then((data) {
+                        print(data);
+                      });
                     });
-                  });
-                },
-                child: Text("Share On Instagrams"),
-              )
-            ],
+                  },
+                  child: Text("Share On Instagram Story"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.shareFacebookStory(
+                              image.path,
+                              "#ffffff",
+                              "#000000",
+                              "https://deep-link-url",
+                              "facebook-app-id")
+                          .then((data) {
+                        print(data);
+                      });
+                    });
+                  },
+                  child: Text("Share On Facebook Story"),
+                )
+              ],
+            ),
           ),
         ),
       ),

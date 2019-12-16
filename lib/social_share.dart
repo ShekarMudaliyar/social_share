@@ -9,8 +9,11 @@ class SocialShare {
     return version;
   }
 
-  static Future<bool> shareInstagramStory(stickerImage, backgroundTopColor,
-      backgroundBottomColor, attributionURL) async {
+  static Future<bool> shareInstagramStory(
+      String stickerImage,
+      String backgroundTopColor,
+      String backgroundBottomColor,
+      String attributionURL) async {
     final Map<String, dynamic> args = <String, dynamic>{
       "stickerImage": stickerImage,
       "backgroundTopColor": backgroundTopColor,
@@ -18,10 +21,29 @@ class SocialShare {
       "attributionURL": attributionURL
     };
 
-    final bool commit =
+    final bool response =
         await _channel.invokeMethod('shareInstagramStory', args);
 
-    return commit;
+    return response;
+  }
+
+  static Future<bool> shareFacebookStory(
+      String stickerImage,
+      String backgroundTopColor,
+      String backgroundBottomColor,
+      String attributionURL,
+      String appID) async {
+    final Map<String, dynamic> args = <String, dynamic>{
+      "stickerImage": stickerImage,
+      "backgroundTopColor": backgroundTopColor,
+      "backgroundBottomColor": backgroundBottomColor,
+      "attributionURL": attributionURL,
+      "appID": appID
+    };
+
+    final bool response =
+        await _channel.invokeMethod('shareFacebookStory', args);
+    return response;
   }
 
   static Future<String> shareWhatsapp() async {
@@ -41,11 +63,6 @@ class SocialShare {
 
   static Future<String> shareSms() async {
     final String version = await _channel.invokeMethod('shareSms');
-    return version;
-  }
-
-  static Future<String> shareFacebook() async {
-    final String version = await _channel.invokeMethod('shareFacebook');
     return version;
   }
 
