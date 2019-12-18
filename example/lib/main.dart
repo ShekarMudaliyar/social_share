@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:screenshot/screenshot.dart';
-import 'package:flutter/services.dart';
 import 'package:social_share/social_share.dart';
 
 void main() => runApp(MyApp());

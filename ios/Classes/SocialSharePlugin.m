@@ -84,6 +84,11 @@
       UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
       pasteboard.string = content;
       result([NSNumber numberWithBool:YES]);
+  }else if([@"shareTwitter" isEqualToString:call.method]){
+      NSString *content = call.arguments[@"content"];
+      UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+      pasteboard.string = content;
+      result([NSNumber numberWithBool:YES]);
   } else {
     result(FlutterMethodNotImplemented);
   }

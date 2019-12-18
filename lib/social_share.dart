@@ -41,30 +41,30 @@ class SocialShare {
     return response;
   }
 
-  static Future<String> shareWhatsapp() async {
-    final String version = await _channel.invokeMethod('shareWhatsapp');
-    return version;
-  }
+  // static Future<String> shareWhatsapp() async {
+  //   final String version = await _channel.invokeMethod('shareWhatsapp');
+  //   return version;
+  // }
 
-  static Future<String> shareTelegram() async {
-    final String version = await _channel.invokeMethod('shareTelegram');
-    return version;
-  }
+  // static Future<String> shareTelegram() async {
+  //   final String version = await _channel.invokeMethod('shareTelegram');
+  //   return version;
+  // }
 
-  static Future<String> shareTwitter() async {
-    final String version = await _channel.invokeMethod('shareTwitter');
-    return version;
-  }
+  // static Future<String> shareTwitter() async {
+  //   final String version = await _channel.invokeMethod('shareTwitter');
+  //   return version;
+  // }
 
-  static Future<String> shareSms() async {
-    final String version = await _channel.invokeMethod('shareSms');
-    return version;
-  }
+  // static Future<String> shareSms() async {
+  //   final String version = await _channel.invokeMethod('shareSms');
+  //   return version;
+  // }
 
-  static Future<String> shareSlack() async {
-    final String version = await _channel.invokeMethod('shareSlack');
-    return version;
-  }
+  // static Future<String> shareSlack() async {
+  //   final String version = await _channel.invokeMethod('shareSlack');
+  //   return version;
+  // }
 
   static Future<bool> copyToClipboard(content) async {
     final Map<String, String> args = <String, String>{

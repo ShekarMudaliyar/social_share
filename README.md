@@ -2,13 +2,56 @@
 
 A new flutter plugin project.
 
-## Getting Started
+## Introduction
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+This plugin is only for IOS yet!
+It provides you with most of the popular sharing options
+With this plugin you can share on instagram stories and facebook stories and also copy to clipboard
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Usage
+
+# Add this to your `Info.plist`
+
+```
+<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>instagram-stories</string>
+	<string>facebook-stories</string>
+	<string>facebook</string>
+	<string>instagram</string>
+	</array>
+```
+
+# shareInstagramStory
+
+```
+SocialShare.shareInstagramStory(imageFile.path, "#ffffff",
+                              "#000000", "https://deep-link-url")
+```
+
+# shareFacebookStory
+
+```
+SocialShare.shareFacebookStory(image.path,"#ffffff","#000000",
+                              "https://deep-link-url","facebook-app-id")
+```
+
+# copyToClipboard
+
+```
+SocialShare.copyToClipboard("This is Social Share plugin",)
+```
+
+## InProgress
+
+# share on slack
+
+# share on twitter
+
+# share on whatsapp
+
+# share on telegram
+
+# share on sms
+
+# more options for share
