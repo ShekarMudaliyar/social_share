@@ -2,6 +2,8 @@
 
 A new flutter plugin project.
 
+## This plugin is IOS only Android is still in progress
+
 ## Introduction
 
 This plugin is only for IOS yet!
