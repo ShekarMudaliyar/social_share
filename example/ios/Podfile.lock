@@ -1,14 +1,26 @@
 PODS:
+  - Fabric (1.10.2)
   - Flutter (1.0.0)
   - path_provider (0.0.1):
     - Flutter
   - social_share (0.0.1):
     - Flutter
+  - TwitterCore (2.8.0):
+    - Fabric
+  - TwitterKit (2.8.1):
+    - TwitterCore (>= 2.8)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - social_share (from `.symlinks/plugins/social_share/ios`)
+  - TwitterKit
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Fabric
+    - TwitterCore
+    - TwitterKit
 
 EXTERNAL SOURCES:
   Flutter:
@@ -19,10 +31,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/social_share/ios"
 
 SPEC CHECKSUMS:
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   social_share: 702a5e3842addd22db515aa9e1e00a4b80a0296d
+  TwitterCore: e959987be23c767004d29eb7fab8d85d8585a2e5
+  TwitterKit: 3b6044a7320340326a4098f3e37aa1dbaeb94942
 
-PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
+PODFILE CHECKSUM: c100f04ae76fad38f8652079eac70c84d4ef81e8
 
 COCOAPODS: 1.7.5

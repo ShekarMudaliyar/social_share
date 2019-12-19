@@ -9,6 +9,8 @@
 	<string>facebook</string>
 	<string>instagram</string>
 	</array>
+	<key>FacebookAppID</key>
+	<string>2574827525869114</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -48,5 +50,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb2574827525869114</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
