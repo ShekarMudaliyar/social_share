@@ -1,6 +1,6 @@
 # social_share
 
-Wide variety of sharing options you'll need to share directly to certain apps. This plugin includes share to Instagram-story, Facebook-story, Twitter, Sms, Copy to clipboard , and default option to share.
+Wide variety of sharing options you'll need to share directly to certain popular apps or just share with default native share.
 
 ## This plugin is iOS only Android is still in progress
 

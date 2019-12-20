@@ -1,4 +1,4 @@
-## 0.0.3
+## 1.0.0
 
 - modified share facebook story method
 - added copy to clipboard
