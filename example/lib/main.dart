@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     SocialShare.shareSms("This is Social Share Sms example",
-                            url: "https://micro.volvmedia.com/")
+                            url: "https://google.com/")
                         .then((data) {
                       print(data);
                     });
@@ -122,13 +122,24 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     await screenshotController.capture().then((image) async {
-                      SocialShare.shareOptions(image.path, "Hello world")
+                      SocialShare.shareOptions("Hello world",
+                              imagePath: image.path)
                           .then((data) {
                         print(data);
                       });
                     });
                   },
                   child: Text("Share Options"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.shareWhatsapp("Hello World").then((data) {
+                        print(data);
+                      });
+                    });
+                  },
+                  child: Text("Share on Whatsapp"),
                 ),
               ],
             ),

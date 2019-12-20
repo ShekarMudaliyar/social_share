@@ -112,7 +112,8 @@ class SocialShare {
     return response;
   }
 
-  static Future<bool> shareOptions(String imagePath, String contentText) async {
+  static Future<bool> shareOptions(String contentText,
+      {String imagePath}) async {
     final Map<String, dynamic> args = <String, dynamic>{
       "image": imagePath,
       "content": contentText
@@ -120,13 +121,16 @@ class SocialShare {
     final bool version = await _channel.invokeMethod('shareOptions', args);
     return version;
   }
-  // static Future<String> shareWhatsapp() async {
-  //   final String version = await _channel.invokeMethod('shareWhatsapp');
-  //   return version;
-  // }
 
-  // static Future<String> shareTelegram() async {
-  //   final String version = await _channel.invokeMethod('shareTelegram');
+  static Future<String> shareWhatsapp(String content) async {
+    final Map<String, dynamic> args = <String, dynamic>{"content": content};
+    final String version = await _channel.invokeMethod('shareWhatsapp', args);
+    return version;
+  }
+
+  // static Future<String> shareTelegram(String content) async {
+  //   final Map<String, dynamic> args = <String, dynamic>{"content": content};
+  //   final String version = await _channel.invokeMethod('shareTelegram', args);
   //   return version;
   // }
 

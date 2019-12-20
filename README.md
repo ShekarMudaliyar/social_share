@@ -1,6 +1,6 @@
 # social_share
 
-Flutter plugin to share images on social media. Such as sharing on Instagram, Facebook story ,Twitter, Sms and other popular sharing options.
+Wide variety of sharing options you'll need to share directly to certain apps. This plugin includes share to Instagram-story, Facebook-story, Twitter, Sms, Copy to clipboard , and default option to share.
 
 ## This plugin is iOS only Android is still in progress
 
@@ -21,6 +21,8 @@ With this plugin you can share on instagram stories and facebook stories and als
 	<string>facebook-stories</string>
 	<string>facebook</string>
 	<string>instagram</string>
+	<string>twitter</string>
+	<string>whatsapp</string>
 	</array>
 ```
 
@@ -80,15 +82,20 @@ SocialShare.shareSms("This is Social Share Sms example");
 SocialShare.shareSms("This is Social Share Sms example",url: "https://micro.volvmedia.com/");
 ```
 
+### shareWhatsapp
+
+```
+SocialShare.shareWhatsapp("Hello World");
+```
+
 #### shareOptions
 
-```
-SocialShare.shareOptions(image.path, "Hello world");
-```
+This will open the default native share options
 
-## InProgress
+```
+//without an image
+SocialShare.shareOptions("Hello world");
 
-- share on slack
-- share on whatsapp
-- share on telegram
-- more options for share
+//with an image
+SocialShare.shareOptions("Hello world",imagePath: image.path);
+```

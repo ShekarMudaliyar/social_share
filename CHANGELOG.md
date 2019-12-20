@@ -5,6 +5,7 @@
 - Added share on Instagram story with background.
 - Added share on Twitter
 - Added share with Sms
+- Added share on Whatsapp
 - Added default share options
 
 ## 0.0.1
