@@ -42,9 +42,10 @@ class _MyAppState extends State<MyApp> {
           controller: screenshotController,
           child: Container(
             color: Colors.white,
+            alignment: Alignment.center,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   'Running on: $_platformVersion\n',
@@ -65,12 +66,21 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     await screenshotController.capture().then((image) async {
-                      SocialShare.shareFacebookStory(
-                              image.path,
-                              "#ffffff",
-                              "#000000",
-                              "https://deep-link-url",
-                              "facebook-app-id")
+                      SocialShare.shareInstagramStorywithBackground(image.path,
+                              "#ffffff", "#000000", "https://deep-link-url",
+                              backgroundImagePath: image.path)
+                          .then((data) {
+                        print(data);
+                      });
+                    });
+                  },
+                  child: Text("Share On Instagram Story with background"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.shareFacebookStory(image.path, "#ffffff",
+                              "#000000", "https://google.com")
                           .then((data) {
                         print(data);
                       });
@@ -80,16 +90,46 @@ class _MyAppState extends State<MyApp> {
                 ),
                 RaisedButton(
                   onPressed: () async {
+                    SocialShare.copyToClipboard(
+                      "This is Social Share plugin",
+                    ).then((data) {
+                      print(data);
+                    });
+                  },
+                  child: Text("Copy to clipboard"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    SocialShare.shareTwitter(
+                            "This is Social Share twitter example",
+                            hashtags: ["hello", "world", "foo", "bar"])
+                        .then((data) {
+                      print(data);
+                    });
+                  },
+                  child: Text("Share on twitter"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    SocialShare.shareSms("This is Social Share Sms example",
+                            url: "https://micro.volvmedia.com/")
+                        .then((data) {
+                      print(data);
+                    });
+                  },
+                  child: Text("Share on Sms"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
                     await screenshotController.capture().then((image) async {
-                      SocialShare.copyToClipboard(
-                        "This is Social Share plugin",
-                      ).then((data) {
+                      SocialShare.shareOptions(image.path, "Hello world")
+                          .then((data) {
                         print(data);
                       });
                     });
                   },
-                  child: Text("Copy to clipboard"),
-                )
+                  child: Text("Share Options"),
+                ),
               ],
             ),
           ),
