@@ -82,7 +82,7 @@ SocialShare.shareSms("This is Social Share Sms example");
 SocialShare.shareSms("This is Social Share Sms example",url: "https://micro.volvmedia.com/");
 ```
 
-### shareWhatsapp
+#### shareWhatsapp
 
 ```
 SocialShare.shareWhatsapp("Hello World");
@@ -99,3 +99,9 @@ SocialShare.shareOptions("Hello world");
 //with an image
 SocialShare.shareOptions("Hello world",imagePath: image.path);
 ```
+
+### Buy me a :coffee: !!
+
+((More coffee == more code) == more fast updates)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/b1naryishere/10)
