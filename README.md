@@ -70,6 +70,11 @@ SocialShare.shareTwitter("This is Social Share plugin");
 SocialShare.shareTwitter(
                               "This is Social Share twitter example",
                               hashtags: ["hello", "world", "foo", "bar"]);
+
+//with hashtags and link
+SocialShare.shareTwitter(
+                              "This is Social Share twitter example",
+                              hashtags: ["hello", "world", "foo", "bar"],url:"https://your-url-here/");
 ```
 
 #### shareSms
@@ -79,7 +84,7 @@ SocialShare.shareTwitter(
 SocialShare.shareSms("This is Social Share Sms example");
 
 //with url link in message
-SocialShare.shareSms("This is Social Share Sms example",url: "https://micro.volvmedia.com/");
+SocialShare.shareSms("This is Social Share Sms example",url: "https://your-url-here/");
 ```
 
 #### shareWhatsapp
@@ -98,6 +103,12 @@ SocialShare.shareOptions("Hello world");
 
 //with an image
 SocialShare.shareOptions("Hello world",imagePath: image.path);
+```
+
+#### checkInstalledAppsForShare
+
+```
+SocialShare.checkInstalledAppsForShare();
 ```
 
 ### Buy me a :coffee: !!

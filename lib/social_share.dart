@@ -60,7 +60,7 @@ class SocialShare {
   }
 
   static Future<String> shareTwitter(String captionText,
-      {List<String> hashtags}) async {
+      {List<String> hashtags, String url}) async {
     Map<String, dynamic> args;
     if (hashtags != null && hashtags.isNotEmpty) {
       String tags = "";
@@ -72,10 +72,12 @@ class SocialShare {
       args = <String, dynamic>{
         "captionText":
             Uri.parse(captionText + "\n" + tags.toString()).toString(),
+        "url": Uri.parse(url).toString()
       };
     } else {
       args = <String, dynamic>{
         "captionText": Uri.parse(captionText).toString(),
+        "url": Uri.parse(url).toString()
       };
     }
     final String version = await _channel.invokeMethod('shareTwitter', args);
@@ -128,6 +130,10 @@ class SocialShare {
     return version;
   }
 
+  static Future<Map> checkInstalledAppsForShare() async {
+    final Map apps = await _channel.invokeMethod('checkInstalledApps');
+    return apps;
+  }
   // static Future<String> shareTelegram(String content) async {
   //   final Map<String, dynamic> args = <String, dynamic>{"content": content};
   //   final String version = await _channel.invokeMethod('shareTelegram', args);

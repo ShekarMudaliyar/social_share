@@ -102,7 +102,8 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     SocialShare.shareTwitter(
                             "This is Social Share twitter example",
-                            hashtags: ["hello", "world", "foo", "bar"])
+                            hashtags: ["hello", "world", "foo", "bar"],
+                            url: "https://micro.volvmedia.com/#/story/222")
                         .then((data) {
                       print(data);
                     });
@@ -140,6 +141,16 @@ class _MyAppState extends State<MyApp> {
                     });
                   },
                   child: Text("Share on Whatsapp"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await screenshotController.capture().then((image) async {
+                      SocialShare.checkInstalledAppsForShare().then((data) {
+                        print(data.toString());
+                      });
+                    });
+                  },
+                  child: Text("Get all Apps"),
                 ),
               ],
             ),

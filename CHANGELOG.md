@@ -1,3 +1,11 @@
+## 1.0.4
+
+- added url parameter in sharetwitter
+
+## 1.0.2
+
+- added check installed apps
+
 ## 1.0.0
 
 - modified share facebook story method

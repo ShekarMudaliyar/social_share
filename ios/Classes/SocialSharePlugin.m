@@ -5,6 +5,7 @@
 
 
 #import "SocialSharePlugin.h"
+#include <objc/runtime.h>
 
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -129,9 +130,14 @@
   }else if([@"shareTwitter" isEqualToString:call.method]){
 //      NSString *assetImage = call.arguments[@"assetImage"];
       NSString *captionText = call.arguments[@"captionText"];
+      NSString *urlstring = call.arguments[@"url"];
+      NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+      NSURL *url = [NSURL URLWithString: urlTextEscaped];
       NSURL *urlScheme = [NSURL URLWithString:@"twitter://"];
       if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
           //check if twitter app exists
+          //check if it contains a link
+          if ( [ [url absoluteString]  length] == 0 ){
       NSString *urlSchemeTwitter = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
       NSURL *urlSchemeSend = [NSURL URLWithString:urlSchemeTwitter];
       if (@available(iOS 10.0, *)) {
@@ -140,6 +146,19 @@
       } else {
           result(@"this only supports iOS 10+");
       }
+          }else{
+              NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
+                    //appending url with normal text and url scheme
+                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
+                    //final urlscheme
+                           NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
+                           if (@available(iOS 10.0, *)) {
+                               [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
+                               result(@"sharing");
+                           } else {
+                               result(@"this only supports iOS 10+");
+                           }
+          }
           
           }else{
                      result(@"cannot find Twitter app");
@@ -170,8 +189,11 @@
                        }
     }else{
         //if it does contains a link
+        //url scheme with normal text message
         NSString *urlSchemeSms = [NSString stringWithFormat:@"sms:?&body=%@",msg];
+        //appending url with normal text and url scheme
         NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
+        //final urlscheme
                NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
                if (@available(iOS 10.0, *)) {
@@ -238,7 +260,37 @@
                                 [controller presentViewController:activityVC animated:YES completion:nil];
                                  result([NSNumber numberWithBool:YES]);
               }
-            }else {
+            }
+          else if([@"checkInstalledApps" isEqualToString:call.method]){
+              NSMutableDictionary *installedApps = [[NSMutableDictionary alloc] init];
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"instagram-stories://"]]) {
+                  [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"instagram"];
+              }else{
+                  [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"instagram"];
+              }
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"facebook-stories://"]]) {
+                  [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"facebook"];
+              }else{
+                  [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"facebook"];
+              }
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]]) {
+                  [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"twitter"];
+              }else{
+                  [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"twitter"];
+              }
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"sms://"]]) {
+                  [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"sms"];
+              }else{
+                  [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"sms"];
+              }
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"whatsapp://"]]) {
+                  [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"whatsapp"];
+              }else{
+                  [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"whatsapp"];
+              }
+              result(installedApps);
+            }
+          else {
     result(FlutterMethodNotImplemented);
   }
 }
