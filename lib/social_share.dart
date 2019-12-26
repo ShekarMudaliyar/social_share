@@ -67,8 +67,6 @@ class SocialShare {
       hashtags.forEach((f) {
         tags += ("%23" + f.toString() + " ").toString();
       });
-      print(tags);
-      print(Uri.parse(captionText + tags.toString()).toString());
       args = <String, dynamic>{
         "captionText":
             Uri.parse(captionText + "\n" + tags.toString()).toString(),
@@ -76,7 +74,7 @@ class SocialShare {
       };
     } else {
       args = <String, dynamic>{
-        "captionText": Uri.parse(captionText).toString(),
+        "captionText": Uri.parse(captionText + " ").toString(),
         "url": Uri.parse(url).toString()
       };
     }
@@ -87,16 +85,10 @@ class SocialShare {
   static Future<String> shareSms(String message, {String url}) async {
     Map<String, dynamic> args;
     if (url == null) {
-      print("url is null");
       args = <String, dynamic>{
         "message": Uri.parse(message).toString(),
       };
     } else {
-      print(Uri.parse(url).toString());
-      var msg = Uri.parse(message).toString() +
-          "%20" +
-          Uri.parse(url.toString()).toString();
-      print(msg);
       args = <String, dynamic>{
         "message": Uri.parse(message + " ").toString(),
         "urlLink": Uri.parse(url).toString(),
