@@ -1,3 +1,7 @@
+## 1.0.7
+
+- added trailing text parameter in twitter and sms
+
 ## 1.0.4
 
 - added url parameter in sharetwitter

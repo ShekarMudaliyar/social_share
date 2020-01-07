@@ -60,7 +60,7 @@ class SocialShare {
   }
 
   static Future<String> shareTwitter(String captionText,
-      {List<String> hashtags, String url}) async {
+      {List<String> hashtags, String url, String trailingText}) async {
     Map<String, dynamic> args;
     if (hashtags != null && hashtags.isNotEmpty) {
       String tags = "";
@@ -70,19 +70,22 @@ class SocialShare {
       args = <String, dynamic>{
         "captionText":
             Uri.parse(captionText + "\n" + tags.toString()).toString(),
-        "url": Uri.parse(url).toString()
+        "url": Uri.parse(url).toString(),
+        "trailingText": Uri.parse(trailingText).toString()
       };
     } else {
       args = <String, dynamic>{
         "captionText": Uri.parse(captionText + " ").toString(),
-        "url": Uri.parse(url).toString()
+        "url": Uri.parse(url).toString(),
+        "trailingText": Uri.parse(trailingText).toString()
       };
     }
     final String version = await _channel.invokeMethod('shareTwitter', args);
     return version;
   }
 
-  static Future<String> shareSms(String message, {String url}) async {
+  static Future<String> shareSms(String message,
+      {String url, String trailingText}) async {
     Map<String, dynamic> args;
     if (url == null) {
       args = <String, dynamic>{
@@ -92,6 +95,7 @@ class SocialShare {
       args = <String, dynamic>{
         "message": Uri.parse(message + " ").toString(),
         "urlLink": Uri.parse(url).toString(),
+        "trailingText": Uri.parse(trailingText).toString()
       };
     }
     final String version = await _channel.invokeMethod('shareSms', args);

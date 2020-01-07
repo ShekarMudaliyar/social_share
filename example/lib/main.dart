@@ -103,7 +103,8 @@ class _MyAppState extends State<MyApp> {
                     SocialShare.shareTwitter(
                             "This is Social Share twitter example",
                             hashtags: ["hello", "world", "foo", "bar"],
-                            url: "https://google.com")
+                            url: "https://google.com",
+                            trailingText: "hello")
                         .then((data) {
                       print(data);
                     });
@@ -113,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     SocialShare.shareSms("This is Social Share Sms example",
-                            url: "https://google.com/")
+                            url: "https://google.com/", trailingText: "hello")
                         .then((data) {
                       print(data);
                     });

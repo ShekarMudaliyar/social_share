@@ -131,6 +131,8 @@
 //      NSString *assetImage = call.arguments[@"assetImage"];
       NSString *captionText = call.arguments[@"captionText"];
       NSString *urlstring = call.arguments[@"url"];
+      NSString *trailingText = call.arguments[@"trailingText"];
+
       NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
       NSURL *url = [NSURL URLWithString: urlTextEscaped];
       NSURL *urlScheme = [NSURL URLWithString:@"twitter://"];
@@ -147,9 +149,13 @@
           result(@"this only supports iOS 10+");
       }
           }else{
+              //check if trailing text equals null
+             if ( [ trailingText   length] == 0 ){
+                 //if trailing text is null
               NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
                     //appending url with normal text and url scheme
                     NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
+              
                     //final urlscheme
                            NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
                            if (@available(iOS 10.0, *)) {
@@ -158,6 +164,21 @@
                            } else {
                                result(@"this only supports iOS 10+");
                            }
+             }else{
+                 //if trailing text is not null
+                 NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
+                                    //appending url with normal text and url scheme
+                                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
+                              NSString *finalurl = [urlWithLink stringByAppendingString:trailingText];
+                                    //final urlscheme
+                                           NSURL *urlSchemeMsg = [NSURL URLWithString:finalurl];
+                                           if (@available(iOS 10.0, *)) {
+                                               [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
+                                               result(@"sharing");
+                                           } else {
+                                               result(@"this only supports iOS 10+");
+                                           }
+             }
           }
           
           }else{
@@ -167,6 +188,8 @@
   }else if([@"shareSms" isEqualToString:call.method]){
         NSString *msg = call.arguments[@"message"];
         NSString *urlstring = call.arguments[@"urlLink"];
+      NSString *trailingText = call.arguments[@"trailingText"];
+
       NSURL *urlScheme = [NSURL URLWithString:@"sms://"];
 
         NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -189,6 +212,9 @@
                        }
     }else{
         //if it does contains a link
+        //check if trailing text equals null
+                  if ( [ trailingText   length] == 0 ){
+                      //if trailing text is null
         //url scheme with normal text message
         NSString *urlSchemeSms = [NSString stringWithFormat:@"sms:?&body=%@",msg];
         //appending url with normal text and url scheme
@@ -206,6 +232,28 @@
             result(@"cannot find Sms app");
 
         }
+                  }else{
+                      //if trailing text is not null
+                      NSString *urlSchemeSms = [NSString stringWithFormat:@"sms:?&body=%@",msg];
+                             //appending url with normal text and url scheme
+                             NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
+                      NSString *finalUrl = [urlWithLink stringByAppendingString:trailingText];
+
+                             //final urlscheme
+                                    NSURL *urlSchemeMsg = [NSURL URLWithString:finalUrl];
+                             if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
+                                    if (@available(iOS 10.0, *)) {
+                                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
+                                        result(@"sharing");
+                                    } else {
+                                        result(@"this only supports iOS 10+");
+                                    }
+                             }else{
+                                 result(@"cannot find Sms app");
+
+                             }
+                  }
+        
     }
       }else if([@"shareSlack" isEqualToString:call.method]){
       //      NSString *content = call.arguments[@"content"];
