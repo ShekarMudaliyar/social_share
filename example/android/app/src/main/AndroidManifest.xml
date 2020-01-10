@@ -28,7 +28,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-<!--        add this provider here-->
+        <!-- Add FileProvider in order to access the shared file -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

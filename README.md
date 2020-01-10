@@ -2,15 +2,41 @@
 
 Wide variety of sharing options you'll need to share directly to certain popular apps or just share with default native share.
 
-## This plugin is iOS only Android is still in progress
-
 ## Introduction
 
-This plugin is only for iOS yet!
+Works on both platforms `Android` and `iOS`
+
 It provides you with most of the popular sharing options
 With this plugin you can share on instagram stories and facebook stories and also copy to clipboard
 
 ## Usage
+
+### Android Configuration
+
+#### Add this piece of code in the `manifest/application` in the `android/app/src/main/AndroidManifest.xml`:
+
+```
+ 		<provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+```
+
+#### Create a xml file named `filepaths.xml` in the `app/src/main/res/xml` folder and paste this code in the file :
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="image" path="/"/>
+</paths>
+```
+
+### iOS Configuration
 
 #### Add this to your `Info.plist` to use share on instagram and facebook story
 
@@ -49,9 +75,20 @@ SocialShare.shareInstagramStory(imageFile.path, "#ffffff",
 
 #### shareFacebookStory
 
+For iOS
+
 ```
 SocialShare.shareFacebookStory(image.path,"#ffffff","#000000",
                               "https://deep-link-url","facebook-app-id");
+```
+
+For Android
+appID is mandatory if using shareFacebookStory or else it wont work
+
+```
+SocialShare.shareFacebookStory(image.path,"#ffffff","#000000",
+                              "https://deep-link-url","facebook-app-id",
+							  appId: "xxxxxxxxxxxxx");
 ```
 
 #### copyToClipboard

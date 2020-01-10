@@ -132,9 +132,9 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
           try {
               registrar.activity().startActivity(whatsappIntent)
-              result.success(true)
+              result.success("true")
           } catch (ex: ActivityNotFoundException) {
-              result.success(false)
+              result.success("false")
 
           }
       }else if(call.method == "shareSms"){

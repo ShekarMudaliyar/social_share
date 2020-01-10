@@ -1,3 +1,7 @@
+## 2.0.0
+
+- added support for android
+
 ## 1.0.7
 
 - added trailing text parameter in twitter and sms
