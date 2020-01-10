@@ -18,7 +18,7 @@ With this plugin you can share on instagram stories and facebook stories and als
 ```
  		<provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.com.shekarmudaliyar.social_share"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

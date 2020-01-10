@@ -1,3 +1,7 @@
+## 2.0.1
+
+- changed file provider directory
+
 ## 2.0.0
 
 - added support for android

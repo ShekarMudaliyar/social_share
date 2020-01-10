@@ -40,7 +40,7 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
               val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
               val attributionURL: String? = call.argument("attributionURL")
             val file =  File(registrar.activeContext().cacheDir,stickerImage)
-          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", file)
+          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
 
           val intent = Intent("com.instagram.share.ADD_TO_STORY")
               intent.type = "image/*"
@@ -49,7 +49,7 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           if(backgroundImage!=null){
               //check if background image is also provided
               val backfile =  File(registrar.activeContext().cacheDir,backgroundImage)
-              val backgroundImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", backfile)
+              val backgroundImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
               intent.setDataAndType(backgroundImageFile,"image/*")
           }
 
@@ -76,7 +76,7 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           val appId: String? = call.argument("appId")
 
           val file =  File(registrar.activeContext().cacheDir,stickerImage)
-          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", file)
+          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
           val intent = Intent("com.facebook.stories.ADD_TO_STORY")
           intent.type = "image/*"
           intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -107,7 +107,7 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           if(image!=null){
               //check if  image is also provided
               val imagefile =  File(registrar.activeContext().cacheDir,image)
-              val imageFileUri = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", imagefile)
+              val imageFileUri = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
               intent.type = "image/*"
               intent.putExtra(Intent.EXTRA_STREAM,imageFileUri)
           }
