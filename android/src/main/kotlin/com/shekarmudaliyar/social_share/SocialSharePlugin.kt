@@ -1,16 +1,23 @@
 package com.shekarmudaliyar.social_share
 
 import android.app.Activity
-import android.content.Intent
+import android.content.*
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.lang.Exception
+import java.io.File
+
 
 /** SocialSharePlugin */
 class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
@@ -22,57 +29,166 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
       channel.setMethodCallHandler(SocialSharePlugin(registrar))
     }
   }
+  @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
       if (call.method == "shareInstagramStory") {
-          try {
+          //share on instagram story
               val stickerImage: String? = call.argument("stickerImage")
-              val backgroundTopColor: String? = call.argument("backgroundTopColor")
+          val backgroundImage: String? = call.argument("backgroundImage")
+
+          val backgroundTopColor: String? = call.argument("backgroundTopColor")
               val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
               val attributionURL: String? = call.argument("attributionURL")
-//          val file =  File(registrar.activeContext().cacheDir,stickerImagePath)
-//          Log.d("log",registrar.context().packageName)
-//          val stickerImage = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", file)
-//          Log.d("log",stickerImage.toString())
-//
-//          val intent = Intent("com.instagram.share.ADD_TO_STORY")
-//          intent.type = "image/*"
-//          intent.putExtra("interactive_asset_uri", Uri.parse(stickerImage))
-//          intent.putExtra("content_url", attributionURL)
-//          intent.putExtra("top_background_color", "#33FF33")
-//          intent.putExtra("bottom_background_color", "#FF00FF")
-////            intent.`package`="com.instagram.android"
-//          // Instantiate activity and verify it will resolve implicit intent
-//          // Instantiate activity and verify it will resolve implicit intent
-//          val activity: Activity = registrar.activity()
-//          activity.grantUriPermission(
-//                  "com.instagram.android", Uri.parse(stickerImage), Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//          if (activity.packageManager.resolveActivity(intent, 0) != null) {
-//              activity.startActivityForResult(intent, 0)
-//          }
-              val stickerAssetUri: Uri = Uri.parse(stickerImage)
-              val intent = Intent("com.instagram.share.ADD_TO_STORY")
+            val file =  File(registrar.activeContext().cacheDir,stickerImage)
+          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", file)
+
+          val intent = Intent("com.instagram.share.ADD_TO_STORY")
               intent.type = "image/*"
-              intent.putExtra("interactive_asset_uri", stickerAssetUri)
-              intent.putExtra("content_url", attributionURL)
-              intent.putExtra("top_background_color", "#33FF33")
-              intent.putExtra("bottom_background_color", "#FF00FF")
+          intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+              intent.putExtra("interactive_asset_uri", stickerImageFile)
+          if(backgroundImage!=null){
+              //check if background image is also provided
+              val backfile =  File(registrar.activeContext().cacheDir,backgroundImage)
+              val backgroundImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", backfile)
+              intent.setDataAndType(backgroundImageFile,"image/*")
+          }
+
+          intent.putExtra("content_url", attributionURL)
+              intent.putExtra("top_background_color", backgroundTopColor)
+              intent.putExtra("bottom_background_color", backgroundBottomColor)
               Log.d("", registrar.activity().toString())
-              // Instantiate activity and verify it will resolve implicit intent
               // Instantiate activity and verify it will resolve implicit intent
               val activity: Activity = registrar.activity()
               activity.grantUriPermission(
-                      "com.instagram.android", stickerAssetUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                      "com.instagram.android", stickerImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
               if (activity.packageManager.resolveActivity(intent, 0) != null) {
                   registrar.activeContext().startActivity(intent)
                   result.success("success")
               } else {
                   result.success("error")
               }
+      }else if(call.method == "shareFacebookStory"){
+          //share on facebook story
+          val stickerImage: String? = call.argument("stickerImage")
+          val backgroundTopColor: String? = call.argument("backgroundTopColor")
+          val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
+          val attributionURL: String? = call.argument("attributionURL")
+          val appId: String? = call.argument("appId")
+
+          val file =  File(registrar.activeContext().cacheDir,stickerImage)
+          val stickerImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", file)
+          val intent = Intent("com.facebook.stories.ADD_TO_STORY")
+          intent.type = "image/*"
+          intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+          intent.putExtra("com.facebook.platform.extra.APPLICATION_ID", appId)
+          intent.putExtra("interactive_asset_uri", stickerImageFile)
+          intent.putExtra("content_url", attributionURL)
+          intent.putExtra("top_background_color", backgroundTopColor)
+          intent.putExtra("bottom_background_color", backgroundBottomColor)
+          Log.d("", registrar.activity().toString())
+          // Instantiate activity and verify it will resolve implicit intent
+          val activity: Activity = registrar.activity()
+          activity.grantUriPermission(
+                  "com.facebook.katana", stickerImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+          if (activity.packageManager.resolveActivity(intent, 0) != null) {
+              registrar.activeContext().startActivity(intent)
+              result.success("success")
+          } else {
+              result.success("error")
           }
-          catch (e:Exception){
-              Log.d("  ",e.toString())
+      }else if(call.method == "shareOptions"){
+          //native share options
+
+          val content: String? = call.argument("content")
+          val image: String? = call.argument("image")
+          val intent = Intent()
+          intent.action = Intent.ACTION_SEND
+
+          if(image!=null){
+              //check if  image is also provided
+              val imagefile =  File(registrar.activeContext().cacheDir,image)
+              val imageFileUri = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".provider", imagefile)
+              intent.type = "image/*"
+              intent.putExtra(Intent.EXTRA_STREAM,imageFileUri)
           }
-      } else {
+
+          intent.putExtra(Intent.EXTRA_TEXT, content)
+          registrar.activeContext().startActivity(intent)
+          result.success(true)
+
+      }else if(call.method == "copyToClipboard"){
+          //copies content onto the clipboard
+          val content: String? = call.argument("content")
+          val clipboard =registrar.context().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+          val clip = ClipData.newPlainText("", content)
+          clipboard.primaryClip = clip
+          result.success(true)
+      }else if(call.method == "shareWhatsapp"){
+          //shares content on WhatsApp
+          val content: String? = call.argument("content")
+          val whatsappIntent = Intent(Intent.ACTION_SEND)
+          whatsappIntent.type = "text/plain"
+          whatsappIntent.setPackage("com.whatsapp")
+          whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
+          try {
+              registrar.activity().startActivity(whatsappIntent)
+              result.success(true)
+          } catch (ex: ActivityNotFoundException) {
+              result.success(false)
+
+          }
+      }else if(call.method == "shareSms"){
+          //shares content on sms
+          val content: String? = call.argument("message")
+          val intent = Intent(Intent.ACTION_SENDTO)
+          intent.addCategory(Intent.CATEGORY_DEFAULT)
+          intent.type = "vnd.android-dir/mms-sms"
+          intent.data = Uri.parse("sms:" )
+          intent.putExtra("sms_body", content)
+          try {
+              registrar.activity().startActivity(intent)
+              result.success("true")
+          } catch (ex: ActivityNotFoundException) {
+              result.success("false")
+
+          }
+      }else if(call.method == "shareTwitter"){
+          //shares content on twitter
+          val text: String? = call.argument("captionText")
+          val url: String? = call.argument("url")
+          val trailingText: String? = call.argument("trailingText")
+          val urlScheme = "http://www.twitter.com/intent/tweet?text=$text$url$trailingText"
+          val intent = Intent(Intent.ACTION_VIEW)
+          intent.data = Uri.parse(urlScheme)
+          try {
+              registrar.activity().startActivity(intent)
+              result.success("true")
+          } catch (ex: ActivityNotFoundException) {
+              result.success("false")
+
+          }
+      }else if(call.method == "checkInstalledApps"){
+          //check if the apps exists
+          //creating a mutable map of apps
+          var apps:MutableMap<String, Boolean> = mutableMapOf()
+          //assigning package manager
+          val pm: PackageManager =registrar.context().packageManager
+          //get a list of installed apps.
+          val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+          //intent to check sms app exists
+          val intent = Intent(Intent.ACTION_SENDTO).addCategory(Intent.CATEGORY_DEFAULT)
+          intent.type = "vnd.android-dir/mms-sms"
+          intent.data = Uri.parse("sms:" )
+          val resolvedActivities: List<ResolveInfo>  = pm.queryIntentActivities(intent, 0)
+          //if sms app exists
+          apps["sms"] = resolvedActivities.isNotEmpty()
+          //if other app exists
+          apps["instagram"] = packages.any  {it.packageName.toString().contentEquals("com.instagram.android")  }
+          apps["facebook"] = packages.any  { it.packageName.toString().contentEquals("com.facebook.katana")}
+          apps["twitter"] = packages.any  {it.packageName.toString().contentEquals("com.twitter.android")}
+          apps["whatsapp"] = packages.any  {it.packageName.toString().contentEquals("com.whatsapp")}
+          result.success(apps)
+          } else {
           result.notImplemented()
       }
   }

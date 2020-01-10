@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:screenshot/screenshot.dart';
@@ -79,11 +81,19 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     await screenshotController.capture().then((image) async {
-                      SocialShare.shareFacebookStory(image.path, "#ffffff",
-                              "#000000", "https://google.com")
-                          .then((data) {
-                        print(data);
-                      });
+                      //facebook appId is mandatory for andorid or else share won't work
+                      Platform.isAndroid
+                          ? SocialShare.shareFacebookStory(image.path,
+                                  "#ffffff", "#000000", "https://google.com",
+                                  appId: "xxxxxxxxxxxxx")
+                              .then((data) {
+                              print(data);
+                            })
+                          : SocialShare.shareFacebookStory(image.path,
+                                  "#ffffff", "#000000", "https://google.com")
+                              .then((data) {
+                              print(data);
+                            });
                     });
                   },
                   child: Text("Share On Facebook Story"),
@@ -114,7 +124,8 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     SocialShare.shareSms("This is Social Share Sms example",
-                            url: "https://google.com/", trailingText: "hello")
+                            url: "\nhttps://google.com/",
+                            trailingText: "\nhello")
                         .then((data) {
                       print(data);
                     });
@@ -135,20 +146,18 @@ class _MyAppState extends State<MyApp> {
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      SocialShare.shareWhatsapp("Hello World").then((data) {
-                        print(data);
-                      });
+                    SocialShare.shareWhatsapp(
+                            "Hello World \n https://google.com\nvolv")
+                        .then((data) {
+                      print(data);
                     });
                   },
                   child: Text("Share on Whatsapp"),
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      SocialShare.checkInstalledAppsForShare().then((data) {
-                        print(data.toString());
-                      });
+                    SocialShare.checkInstalledAppsForShare().then((data) {
+                      print(data.toString());
                     });
                   },
                   child: Text("Get all Apps"),
