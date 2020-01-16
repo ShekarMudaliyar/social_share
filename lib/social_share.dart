@@ -132,6 +132,12 @@ class SocialShare {
   static Future<String> shareTwitter(String captionText,
       {List<String> hashtags, String url, String trailingText}) async {
     Map<String, dynamic> args;
+    String modifiedUrl;
+    if (Platform.isAndroid) {
+      modifiedUrl = Uri.parse(url).toString().replaceAll('#', "%23");
+    } else {
+      modifiedUrl = Uri.parse(url).toString();
+    }
     if (hashtags != null && hashtags.isNotEmpty) {
       String tags = "";
       hashtags.forEach((f) {
@@ -140,16 +146,17 @@ class SocialShare {
       args = <String, dynamic>{
         "captionText":
             Uri.parse(captionText + "\n" + tags.toString()).toString(),
-        "url": Uri.parse(url).toString(),
+        "url": modifiedUrl,
         "trailingText": Uri.parse(trailingText).toString()
       };
     } else {
       args = <String, dynamic>{
         "captionText": Uri.parse(captionText + " ").toString(),
-        "url": Uri.parse(url).toString(),
+        "url": modifiedUrl,
         "trailingText": Uri.parse(trailingText).toString()
       };
     }
+    print('hello');
     final String version = await _channel.invokeMethod('shareTwitter', args);
     return version;
   }

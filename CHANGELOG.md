@@ -1,3 +1,7 @@
+## 2.0.2
+
+- sharetwitter url fixes
+
 ## 2.0.1
 
 - changed file provider directory

@@ -158,6 +158,7 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           val url: String? = call.argument("url")
           val trailingText: String? = call.argument("trailingText")
           val urlScheme = "http://www.twitter.com/intent/tweet?text=$text$url$trailingText"
+          Log.d("log",urlScheme)
           val intent = Intent(Intent.ACTION_VIEW)
           intent.data = Uri.parse(urlScheme)
           try {

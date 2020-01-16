@@ -1,7 +1,8 @@
 name: social_share
 description: Wide variety of sharing options you'll need to share directly to certain well-known apps.
-version: 2.0.1
-author: Shekar Mudaliyar <sskshekar10@gmail.com>
+version: 2.0.2
+authors:
+  - <sskshekar10@gmail.com>
 homepage: https://github.com/ShekarMudaliyar/social_share
 
 environment:

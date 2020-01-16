@@ -113,8 +113,8 @@ class _MyAppState extends State<MyApp> {
                     SocialShare.shareTwitter(
                             "This is Social Share twitter example",
                             hashtags: ["hello", "world", "foo", "bar"],
-                            url: "https://google.com",
-                            trailingText: "hello")
+                            url: "https://google.com/#/hello",
+                            trailingText: "\nhello")
                         .then((data) {
                       print(data);
                     });
