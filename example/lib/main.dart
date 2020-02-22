@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:screenshot/screenshot.dart';
 import 'package:social_share/social_share.dart';
@@ -55,12 +58,12 @@ class _MyAppState extends State<MyApp> {
                 ),
                 RaisedButton(
                   onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      SocialShare.shareInstagramStory(image.path, "#ffffff",
-                              "#000000", "https://deep-link-url")
-                          .then((data) {
-                        print(data);
-                      });
+                    File file = await ImagePicker.pickImage(
+                        source: ImageSource.gallery);
+                    SocialShare.shareInstagramStory(file.path, "#ffffff",
+                            "#000000", "https://deep-link-url")
+                        .then((data) {
+                      print(data);
                     });
                   },
                   child: Text("Share On Instagram Story"),
@@ -147,12 +150,22 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     SocialShare.shareWhatsapp(
-                            "Hello World \n https://google.com\nvolv")
+                            "Hello World \n https://google.com")
                         .then((data) {
                       print(data);
                     });
                   },
                   child: Text("Share on Whatsapp"),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    SocialShare.shareTelegram(
+                            "Hello World \n https://google.com")
+                        .then((data) {
+                      print(data);
+                    });
+                  },
+                  child: Text("Share on Telegram"),
                 ),
                 RaisedButton(
                   onPressed: () async {

@@ -1,3 +1,7 @@
+## 2.0.3
+
+- shareTelegram added to direct share on telegram
+
 ## 2.0.2
 
 - sharetwitter url fixes

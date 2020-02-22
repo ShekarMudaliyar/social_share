@@ -168,7 +168,23 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
               result.success("false")
 
           }
-      }else if(call.method == "checkInstalledApps"){
+      }
+      else if(call.method == "shareTelegram"){
+          //shares content on WhatsApp
+          val content: String? = call.argument("content")
+          val whatsappIntent = Intent(Intent.ACTION_SEND)
+          whatsappIntent.type = "text/plain"
+          whatsappIntent.setPackage("org.telegram.messenger")
+          whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
+          try {
+              registrar.activity().startActivity(whatsappIntent)
+              result.success("true")
+          } catch (ex: ActivityNotFoundException) {
+              result.success("false")
+
+          }
+      }
+      else if(call.method == "checkInstalledApps"){
           //check if the apps exists
           //creating a mutable map of apps
           var apps:MutableMap<String, Boolean> = mutableMapOf()
@@ -188,6 +204,8 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           apps["facebook"] = packages.any  { it.packageName.toString().contentEquals("com.facebook.katana")}
           apps["twitter"] = packages.any  {it.packageName.toString().contentEquals("com.twitter.android")}
           apps["whatsapp"] = packages.any  {it.packageName.toString().contentEquals("com.whatsapp")}
+          apps["telegram"] = packages.any  {it.packageName.toString().contentEquals("org.telegram.messenger")  }
+
           result.success(apps)
           } else {
           result.notImplemented()

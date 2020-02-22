@@ -273,7 +273,7 @@
               result([NSNumber numberWithBool:YES]);
           }else if([@"shareTelegram" isEqualToString:call.method]){
           NSString *content = call.arguments[@"content"];
-                     NSString * urlScheme = [NSString stringWithFormat:@"tel://msg?text=%@",content];
+                     NSString * urlScheme = [NSString stringWithFormat:@"tg://msg?text=%@",content];
                      NSURL * telegramURL = [NSURL URLWithString:[urlScheme stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
                      if ([[UIApplication sharedApplication] canOpenURL: telegramURL]) {
                          [[UIApplication sharedApplication] openURL: telegramURL];
@@ -336,6 +336,11 @@
               }else{
                   [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"whatsapp"];
               }
+              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tg://"]]) {
+                               [installedApps setObject:[NSNumber numberWithBool: YES] forKey:@"telegram"];
+                           }else{
+                               [installedApps setObject:[NSNumber numberWithBool: NO] forKey:@"telegram"];
+                           }
               result(installedApps);
             }
           else {

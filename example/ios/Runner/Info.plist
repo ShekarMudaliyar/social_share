@@ -11,6 +11,7 @@
 	<string>instagram</string>
 	<string>twitter</string>
 	<string>whatsapp</string>
+	<string>tg</string>
 	</array>
 	<!-- Your Facebook App ID -->
 	<key>FacebookAppID</key>
@@ -27,6 +28,14 @@
 	<string>social_share_example</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	
+	<key>NSCameraUsageDescription</key>
+	<string>Used to demonstrate image picker plugin</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used to capture audio for image picker plugin</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to demonstrate image picker plugin</string>
+
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

@@ -49,6 +49,7 @@ With this plugin you can share on instagram stories and facebook stories and als
 	<string>instagram</string>
 	<string>twitter</string>
 	<string>whatsapp</string>
+    <string>tg</string>
 	</array>
 ```
 
@@ -128,6 +129,12 @@ SocialShare.shareSms("This is Social Share Sms example",url: "https://your-url-h
 
 ```
 SocialShare.shareWhatsapp("Hello World");
+```
+
+#### shareTelegram
+
+```
+SocialShare.shareTelegram("Hello World");
 ```
 
 #### shareOptions

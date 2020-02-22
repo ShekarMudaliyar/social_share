@@ -228,11 +228,11 @@ class SocialShare {
     final Map apps = await _channel.invokeMethod('checkInstalledApps');
     return apps;
   }
-  // static Future<String> shareTelegram(String content) async {
-  //   final Map<String, dynamic> args = <String, dynamic>{"content": content};
-  //   final String version = await _channel.invokeMethod('shareTelegram', args);
-  //   return version;
-  // }
+  static Future<String> shareTelegram(String content) async {
+    final Map<String, dynamic> args = <String, dynamic>{"content": content};
+    final String version = await _channel.invokeMethod('shareTelegram', args);
+    return version;
+  }
 
   // static Future<String> shareSlack() async {
   //   final String version = await _channel.invokeMethod('shareSlack');
