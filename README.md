@@ -155,7 +155,21 @@ SocialShare.shareOptions("Hello world",imagePath: image.path);
 SocialShare.checkInstalledAppsForShare();
 ```
 
-### Buy me a :coffee: !!
+# Here's few demo!
+
+## Story share on Instagram
+
+![insta story share demo](demogifs/insta.gif)
+
+## Story share on Facebook
+
+![fb story share demo](demogifs/fbshare.gif)
+
+## Copy to Clipboard
+
+![copy demo](demogifs/copy.gif)
+
+# Buy me a :coffee: !!
 
 ((More coffee == more code) == more fast updates)
 
