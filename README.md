@@ -13,6 +13,20 @@ With this plugin you can share on instagram stories and facebook stories and als
 
 ### Android Configuration
 
+#### Paste the following attribute in the `manifest` tag in the `android/app/src/main/AndroidManifest.xml`:
+
+```
+ 		`xmlns:tools="http://schemas.android.com/tools"`
+```
+
+##### For example:
+
+```
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                package="your package...">
+```
+
 #### Add this piece of code in the `manifest/application` in the `android/app/src/main/AndroidManifest.xml`:
 
 ```
@@ -20,7 +34,8 @@ With this plugin you can share on instagram stories and facebook stories and als
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.com.shekarmudaliyar.social_share"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
