@@ -184,6 +184,10 @@ SocialShare.checkInstalledAppsForShare();
 
 ![copy demo](demogifs/copy.gif)
 
+# Known issues
+
+On Android 6, Share to Instagram Stories may not open Instagram app or load the specified image.
+
 # Buy me a :coffee: !!
 
 ((More coffee == more code) == more fast updates)
