@@ -170,14 +170,14 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
           }
       }
       else if(call.method == "shareTelegram"){
-          //shares content on WhatsApp
+          //shares content on Telegram
           val content: String? = call.argument("content")
-          val whatsappIntent = Intent(Intent.ACTION_SEND)
-          whatsappIntent.type = "text/plain"
-          whatsappIntent.setPackage("org.telegram.messenger")
-          whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
+          val telegramIntent = Intent(Intent.ACTION_SEND)
+          telegramIntent.type = "text/plain"
+          telegramIntent.setPackage("org.telegram.messenger")
+          telegramIntent.putExtra(Intent.EXTRA_TEXT, content)
           try {
-              registrar.activity().startActivity(whatsappIntent)
+              registrar.activity().startActivity(telegramIntent)
               result.success("true")
           } catch (ex: ActivityNotFoundException) {
               result.success("false")
