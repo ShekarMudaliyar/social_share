@@ -1,12 +1,12 @@
 name: social_share
 description: Wide variety of sharing options you'll need to share directly to certain well-known apps.
 version: 2.0.5
-authors:
-  - <sskshekar10@gmail.com>
+author: <sskshekar10@gmail.com>
 homepage: https://github.com/ShekarMudaliyar/social_share
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.10.0"
 
 dependencies:
   flutter:
@@ -19,5 +19,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.shekarmudaliyar.social_share
-    pluginClass: SocialSharePlugin
+    platforms:
+      android:
+        package: com.shekarmudaliyar.social_share
+        pluginClass: SocialSharePlugin
+      ios:
+        pluginClass: SocialSharePlugin
