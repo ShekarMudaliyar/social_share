@@ -1,3 +1,7 @@
+## 2.0.5
+
+- shareOptions without image fixed
+
 ## 2.0.3
 
 - shareTelegram added to direct share on telegram

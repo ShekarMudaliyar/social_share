@@ -138,9 +138,7 @@ class _MyAppState extends State<MyApp> {
                 RaisedButton(
                   onPressed: () async {
                     await screenshotController.capture().then((image) async {
-                      SocialShare.shareOptions("Hello world",
-                              imagePath: image.path)
-                          .then((data) {
+                      SocialShare.shareOptions("Hello world").then((data) {
                         print(data);
                       });
                     });
