@@ -110,10 +110,17 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
               val imageFileUri = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
               intent.type = "image/*"
               intent.putExtra(Intent.EXTRA_STREAM,imageFileUri)
+          } else {
+              intent.type = "text/plain";
           }
 
           intent.putExtra(Intent.EXTRA_TEXT, content)
-          registrar.activeContext().startActivity(intent)
+
+          //create chooser intent to launch intent
+          //source: "share" package by flutter (https://github.com/flutter/plugins/blob/master/packages/share/)
+          val chooserIntent: Intent = Intent.createChooser(intent, null /* dialog title optional */)
+
+          registrar.activeContext().startActivity(chooserIntent)
           result.success(true)
 
       }else if(call.method == "copyToClipboard"){
