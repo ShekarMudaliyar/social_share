@@ -144,19 +144,17 @@ class SocialShare {
         tags += ("%23" + f.toString() + " ").toString();
       });
       args = <String, dynamic>{
-        "captionText":
-            Uri.parse(captionText + "\n" + tags.toString()).toString(),
+        "captionText": captionText + "\n" + tags.toString(),
         "url": modifiedUrl,
-        "trailingText": Uri.parse(trailingText).toString()
+        "trailingText": trailingText
       };
     } else {
       args = <String, dynamic>{
-        "captionText": Uri.parse(captionText + " ").toString(),
+        "captionText": captionText + " ",
         "url": modifiedUrl,
-        "trailingText": Uri.parse(trailingText).toString()
+        "trailingText": trailingText
       };
     }
-    print('hello');
     final String version = await _channel.invokeMethod('shareTwitter', args);
     return version;
   }
@@ -167,13 +165,13 @@ class SocialShare {
     if (Platform.isIOS) {
       if (url == null) {
         args = <String, dynamic>{
-          "message": Uri.parse(message).toString(),
+          "message": message,
         };
       } else {
         args = <String, dynamic>{
-          "message": Uri.parse(message + " ").toString(),
+          "message": message + " ",
           "urlLink": Uri.parse(url).toString(),
-          "trailingText": Uri.parse(trailingText).toString()
+          "trailingText": trailingText
         };
       }
     } else if (Platform.isAndroid) {
