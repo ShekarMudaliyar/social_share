@@ -146,13 +146,13 @@ class SocialShare {
       args = <String, dynamic>{
         "captionText": captionText + "\n" + tags.toString(),
         "url": modifiedUrl,
-        "trailingText": trailingText
+        "trailingText": (trailingText == null || trailingText.isEmpty) ? "" : trailingText
       };
     } else {
       args = <String, dynamic>{
         "captionText": captionText + " ",
         "url": modifiedUrl,
-        "trailingText": trailingText
+        "trailingText": (trailingText == null || trailingText.isEmpty) ? "" : trailingText
       };
     }
     final String version = await _channel.invokeMethod('shareTwitter', args);
