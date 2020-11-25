@@ -144,14 +144,14 @@ class SocialSharePlugin(private val registrar: Registrar) : MethodCallHandler {
             } catch (ex: ActivityNotFoundException) {
                 result.success("false")
             }
-        } else if (call.method == "shareFacebookMessanger") {
+        } else if (call.method == "shareFacebookMessenger") {
             val content: String? = call.argument("content")
-            val whatsappIntent = Intent(Intent.ACTION_SEND)
-            whatsappIntent.type = "text/plain"
-            whatsappIntent.setPackage("com.facebook.orca")
-            whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
+            val fbMessangerIntent = Intent(Intent.ACTION_SEND)
+            fbMessangerIntent.type = "text/plain"
+            fbMessangerIntent.setPackage("com.facebook.orca")
+            fbMessangerIntent.putExtra(Intent.EXTRA_TEXT, content)
             try {
-                registrar.activity().startActivity(whatsappIntent)
+                registrar.activity().startActivity(fbMessangerIntent)
                 result.success("true")
             } catch (ex: ActivityNotFoundException) {
                 result.success("false")
@@ -208,9 +208,9 @@ class SocialSharePlugin(private val registrar: Registrar) : MethodCallHandler {
             val mailIntent = Intent(Intent.ACTION_SENDTO)
             mailIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
             mailIntent.putExtra(Intent.EXTRA_TEXT, content)
-            mailIntent.setData(Uri.parse("mailto:"))
+            mailIntent.data = Uri.parse("mailto:")
             try {
-                registrar.activity().startActivity(intent)
+                registrar.activity().startActivity(mailIntent)
             } catch (ex: ActivityNotFoundException) {
                 result.success("false")
             }

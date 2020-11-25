@@ -283,9 +283,9 @@
     }else if([@"shareFacebookMessenger" isEqualToString:call.method]){
         NSString *content = call.arguments[@"content"];
         NSString * urlWhats = [NSString stringWithFormat:@"fb-messenger://messaging?text=%@",content];
-        NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
-            [[UIApplication sharedApplication] openURL: whatsappURL];
+        NSURL * fbMessangerURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        if ([[UIApplication sharedApplication] canOpenURL: fbMessangerURL]) {
+            [[UIApplication sharedApplication] openURL: fbMessangerURL];
             result(@"sharing");
         } else {
             result(@"cannot open fb messenger");
