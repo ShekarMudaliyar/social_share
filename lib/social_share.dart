@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -185,6 +186,15 @@ class SocialShare {
     return version;
   }
 
+  static Future<String> shareEmail({String subject, String message}) async {
+    final Map<String, dynamic> args = <String, dynamic>{
+      "subject": Uri.parse(subject).toString(),
+      "content": Uri.parse(message).toString(),
+    };
+    final String version = await _channel.invokeMethod('shareEmail', args);
+    return version;
+  }
+
   static Future<bool> copyToClipboard(content) async {
     final Map<String, String> args = <String, String>{
       "content": content.toString()
@@ -228,14 +238,15 @@ class SocialShare {
     final Map apps = await _channel.invokeMethod('checkInstalledApps');
     return apps;
   }
+
   static Future<String> shareTelegram(String content) async {
     final Map<String, dynamic> args = <String, dynamic>{"content": content};
     final String version = await _channel.invokeMethod('shareTelegram', args);
     return version;
   }
 
-  // static Future<String> shareSlack() async {
-  //   final String version = await _channel.invokeMethod('shareSlack');
-  //   return version;
-  // }
+// static Future<String> shareSlack() async {
+//   final String version = await _channel.invokeMethod('shareSlack');
+//   return version;
+// }
 }
