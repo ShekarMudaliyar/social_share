@@ -178,9 +178,15 @@ class SocialShare {
         };
       }
     } else if (Platform.isAndroid) {
-      args = <String, dynamic>{
-        "message": message + url + trailingText,
-      };
+      if (url == null) {
+        args = <String, dynamic>{
+          "message": message,
+        };
+      } else {
+        args = <String, dynamic>{
+          "message": message + url + trailingText,
+        };
+      }
     }
     final String version = await _channel.invokeMethod('shareSms', args);
     return version;
