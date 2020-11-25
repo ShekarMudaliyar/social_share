@@ -143,6 +143,18 @@ class SocialSharePlugin(private val registrar: Registrar) : MethodCallHandler {
                 result.success("true")
             } catch (ex: ActivityNotFoundException) {
                 result.success("false")
+            }
+        } else if (call.method == "shareFacebookMessanger") {
+            val content: String? = call.argument("content")
+            val whatsappIntent = Intent(Intent.ACTION_SEND)
+            whatsappIntent.type = "text/plain"
+            whatsappIntent.setPackage("com.facebook.orca")
+            whatsappIntent.putExtra(Intent.EXTRA_TEXT, content)
+            try {
+                registrar.activity().startActivity(whatsappIntent)
+                result.success("true")
+            } catch (ex: ActivityNotFoundException) {
+                result.success("false")
 
             }
         } else if (call.method == "shareSms") {
