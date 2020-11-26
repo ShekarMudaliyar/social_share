@@ -148,7 +148,7 @@ class SocialSharePlugin(private val registrar: Registrar) : MethodCallHandler {
             val content: String? = call.argument("content")
             val fbMessangerIntent = Intent(Intent.ACTION_SEND)
             fbMessangerIntent.type = "text/plain"
-            fbMessangerIntent.setPackage("com.facebook.orca")
+            fbMessangerIntent.setPackage("com.facebook.katana")
             fbMessangerIntent.putExtra(Intent.EXTRA_TEXT, content)
             try {
                 registrar.activity().startActivity(fbMessangerIntent)
