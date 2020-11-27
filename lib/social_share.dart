@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -132,17 +133,20 @@ class SocialShare {
   static Future<String> shareTwitter(String captionText,
       {List<String> hashtags, String url, String trailingText}) async {
     Map<String, dynamic> args;
+
     String modifiedUrl;
+
     if (Platform.isAndroid) {
-      modifiedUrl = Uri.parse(url).toString().replaceAll('#', "%23");
+      if (url != null) {
+        modifiedUrl = Uri.parse(url).toString().replaceAll('#', "%23");
+      }
     } else {
       modifiedUrl = Uri.parse(url).toString();
     }
+
     if (hashtags != null && hashtags.isNotEmpty) {
       String tags = "";
-      hashtags.forEach((f) {
-        tags += ("%23" + f.toString() + " ").toString();
-      });
+      hashtags.forEach((f) => tags += ("%23" + f.toString() + " ").toString());
       args = <String, dynamic>{
         "captionText":
             Uri.parse(captionText + "\n" + tags.toString()).toString(),
@@ -156,7 +160,7 @@ class SocialShare {
         "trailingText": Uri.parse(trailingText).toString()
       };
     }
-    print('hello');
+
     final String version = await _channel.invokeMethod('shareTwitter', args);
     return version;
   }
@@ -177,11 +181,26 @@ class SocialShare {
         };
       }
     } else if (Platform.isAndroid) {
-      args = <String, dynamic>{
-        "message": message + url + trailingText,
-      };
+      if (url == null) {
+        args = <String, dynamic>{
+          "message": message,
+        };
+      } else {
+        args = <String, dynamic>{
+          "message": message + url + trailingText,
+        };
+      }
     }
     final String version = await _channel.invokeMethod('shareSms', args);
+    return version;
+  }
+
+  static Future<String> shareEmail({String subject, String message}) async {
+    final Map<String, dynamic> args = <String, dynamic>{
+      "subject": Uri.parse(subject).toString(),
+      "content": Uri.parse(message).toString(),
+    };
+    final String version = await _channel.invokeMethod('shareEmail', args);
     return version;
   }
 
@@ -224,18 +243,26 @@ class SocialShare {
     return version;
   }
 
+  static Future<String> shareFacebookMessenger(String content) async {
+    final Map<String, dynamic> args = <String, dynamic>{"content": content};
+    final String version =
+        await _channel.invokeMethod('shareFacebookMessenger', args);
+    return version;
+  }
+
   static Future<Map> checkInstalledAppsForShare() async {
     final Map apps = await _channel.invokeMethod('checkInstalledApps');
     return apps;
   }
+
   static Future<String> shareTelegram(String content) async {
     final Map<String, dynamic> args = <String, dynamic>{"content": content};
     final String version = await _channel.invokeMethod('shareTelegram', args);
     return version;
   }
 
-  // static Future<String> shareSlack() async {
-  //   final String version = await _channel.invokeMethod('shareSlack');
-  //   return version;
-  // }
+// static Future<String> shareSlack() async {
+//   final String version = await _channel.invokeMethod('shareSlack');
+//   return version;
+// }
 }
