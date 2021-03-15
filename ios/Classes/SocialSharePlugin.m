@@ -290,23 +290,39 @@
               if ([image isEqual:[NSNull null]] || [ image  length] == 0 ){
                   //when image is not included
                   NSArray *objectsToShare = @[content];
-                           UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-                          UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-                           [controller presentViewController:activityVC animated:YES completion:nil];
-                            result([NSNumber numberWithBool:YES]);
+                  UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+                  UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+                  
+                  // Check if user is on iPad and present popover
+                  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                      if ([activityVC respondsToSelector:@selector(popoverPresentationController)]) {
+                          activityVC.popoverPresentationController.sourceView = controller.view;
+                      }
+                  }
+                  
+                  [controller presentViewController:activityVC animated:YES completion:nil];
+                  result([NSNumber numberWithBool:YES]);
               }else{
                   //when image file is included
                   NSFileManager *fileManager = [NSFileManager defaultManager];
-                                         BOOL isFileExist = [fileManager fileExistsAtPath: image];
-                                         UIImage *imgShare;
-                                         if (isFileExist) {
-                                             imgShare = [[UIImage alloc] initWithContentsOfFile:image];
-                                         }
-                                NSArray *objectsToShare = @[content, imgShare];
-                                UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-                               UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-                                [controller presentViewController:activityVC animated:YES completion:nil];
-                                 result([NSNumber numberWithBool:YES]);
+                  BOOL isFileExist = [fileManager fileExistsAtPath: image];
+                  UIImage *imgShare;
+                  if (isFileExist) {
+                      imgShare = [[UIImage alloc] initWithContentsOfFile:image];
+                  }
+                  NSArray *objectsToShare = @[content, imgShare];
+                  UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+                  UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+                  
+                  // Check if user is on iPad and present popover
+                  if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                      if ([activityVC respondsToSelector:@selector(popoverPresentationController)]) {
+                          activityVC.popoverPresentationController.sourceView = controller.view;
+                      }
+                  }
+                  
+                  [controller presentViewController:activityVC animated:YES completion:nil];
+                  result([NSNumber numberWithBool:YES]);
               }
             }
           else if([@"checkInstalledApps" isEqualToString:call.method]){
