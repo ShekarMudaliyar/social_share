@@ -1,3 +1,7 @@
+## 2.1.1
+
+- Val reassign error fix
+
 ## 2.1.0
 
 - Migrated to null saftey
