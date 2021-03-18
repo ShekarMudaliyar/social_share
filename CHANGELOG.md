@@ -1,3 +1,7 @@
+## 2.1.0
+
+- Migrated to null saftey
+
 ## 2.0.6
 
 - shareInstagramStory refactor
