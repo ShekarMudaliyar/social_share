@@ -34,16 +34,14 @@ class SocialShare {
         };
       }
     } else {
-      final tempDir = await getTemporaryDirectory();
-
       File file = File(imagePath);
-      Uint8List bytes = file.readAsBytesSync();
-      var stickerData = bytes.buffer.asUint8List();
-      String stickerAssetName = 'stickerAsset.png';
-      final Uint8List stickerAssetAsList = stickerData;
-      final stickerAssetPath = '${tempDir.path}/$stickerAssetName';
-      file = await File(stickerAssetPath).create();
-      file.writeAsBytesSync(stickerAssetAsList);
+      final bytes = file.readAsBytesSync();
+      final tempDir = await getTemporaryDirectory();
+      final imageName = 'stickerAsset.png';
+      final imageDataPath = '${tempDir.path}/$imageName';
+      final imageAsList = bytes.buffer.asUint8List();
+      file = await File(imageDataPath).create();
+      file.writeAsBytesSync(imageAsList);
 
       String? backgroundAssetName;
       if (backgroundImagePath != null) {
@@ -57,7 +55,7 @@ class SocialShare {
       }
 
       args = <String, dynamic>{
-        "stickerImage": stickerAssetName,
+        "stickerImage": imageName,
         "backgroundImage": backgroundAssetName,
         "backgroundTopColor": backgroundTopColor,
         "backgroundBottomColor": backgroundBottomColor,
@@ -87,16 +85,15 @@ class SocialShare {
       };
     } else {
       File file = File(imagePath);
-      Uint8List bytes = file.readAsBytesSync();
-      var stickerdata = bytes.buffer.asUint8List();
+      final bytes = file.readAsBytesSync();
       final tempDir = await getTemporaryDirectory();
-      String stickerAssetName = 'stickerAsset.png';
-      final Uint8List stickerAssetAsList = stickerdata;
-      final stickerAssetPath = '${tempDir.path}/$stickerAssetName';
-      file = await File(stickerAssetPath).create();
-      file.writeAsBytesSync(stickerAssetAsList);
+      final imageName = 'stickerAsset.png';
+      final imageDataPath = '${tempDir.path}/$imageName';
+      final imageAsList = bytes.buffer.asUint8List();
+      file = await File(imageDataPath).create();
+      file.writeAsBytesSync(imageAsList);
       args = <String, dynamic>{
-        "stickerImage": stickerAssetName,
+        "stickerImage": imageName,
         "backgroundTopColor": backgroundTopColor,
         "backgroundBottomColor": backgroundBottomColor,
         "attributionURL": attributionURL,
@@ -109,56 +106,99 @@ class SocialShare {
   }
 
   static Future<String?> shareTwitter(String captionText,
-      {List<String>? hashtags, String? url, String? trailingText}) async {
+      {List<String> hashTags = const <String>[],
+      String url = '',
+      String trailingText = '',
+      String imagePath = ''}) async {
     Map<String, dynamic> args;
-    String modifiedUrl;
-    if (Platform.isAndroid) {
-      modifiedUrl = Uri.parse(url!).toString().replaceAll('#', "%23");
-    } else {
-      modifiedUrl = Uri.parse(url!).toString();
+    if (hashTags.isNotEmpty) {
+      captionText = captionText + "\n" + hashTags.join(" %23").trim();
     }
-    if (hashtags != null && hashtags.isNotEmpty) {
-      String tags = "";
-      hashtags.forEach((f) {
-        tags += ("%23" + f.toString() + " ").toString();
-      });
-      args = <String, dynamic>{
-        "captionText": captionText + "\n" + tags.toString(),
-        "url": modifiedUrl,
-        "trailingText":
-            (trailingText == null || trailingText.isEmpty) ? "" : trailingText
-      };
+    if (Platform.isIOS) {
+      if (url.isEmpty) {
+        args = <String, dynamic>{
+          "captionText": captionText + " ",
+          "trailingText": trailingText,
+          "image": imagePath
+        };
+      } else {
+        args = <String, dynamic>{
+          "captionText": captionText + " ",
+          "url": Uri.parse(url).toString(),
+          "trailingText": trailingText,
+          "image": imagePath
+        };
+      }
     } else {
-      args = <String, dynamic>{
-        "captionText": captionText + " ",
-        "url": modifiedUrl,
-        "trailingText":
-            (trailingText == null || trailingText.isEmpty) ? "" : trailingText
-      };
+      final modifiedUrl = Uri.parse(url).toString().replaceAll('#', "%23");
+      if (imagePath.isNotEmpty) {
+        File file = File(imagePath);
+        final bytes = file.readAsBytesSync();
+        final tempDir = await getTemporaryDirectory();
+        final imageName = 'stickerAsset.png';
+        final imageDataPath = '${tempDir.path}/$imageName';
+        final imageAsList = bytes.buffer.asUint8List();
+        file = await File(imageDataPath).create();
+        file.writeAsBytesSync(imageAsList);
+        args = <String, dynamic>{
+          "captionText": captionText + " ",
+          "url": modifiedUrl,
+          "trailingText": trailingText,
+          "image": imageName
+        };
+      } else {
+        args = <String, dynamic>{
+          "captionText": captionText + " ",
+          "url": modifiedUrl,
+          "trailingText": trailingText,
+          "image": imagePath
+        };
+      }
     }
     final String? version = await _channel.invokeMethod('shareTwitter', args);
     return version;
   }
 
   static Future<String?> shareSms(String message,
-      {String? url, String? trailingText}) async {
+      {String url = '',
+      String trailingText = '',
+      String imagePath = ''}) async {
     Map<String, dynamic>? args;
     if (Platform.isIOS) {
-      if (url == null) {
+      if (url.isEmpty) {
         args = <String, dynamic>{
           "message": message,
+          "trailingText": trailingText,
+          "image": imagePath
         };
       } else {
         args = <String, dynamic>{
           "message": message + " ",
           "urlLink": Uri.parse(url).toString(),
-          "trailingText": trailingText
+          "trailingText": trailingText,
+          "image": imagePath
         };
       }
-    } else if (Platform.isAndroid) {
-      args = <String, dynamic>{
-        "message": message + url! + trailingText!,
-      };
+    } else {
+      if (imagePath.isNotEmpty) {
+        File file = File(imagePath);
+        final bytes = file.readAsBytesSync();
+        final tempDir = await getTemporaryDirectory();
+        final imageName = 'stickerAsset.png';
+        final imageDataPath = '${tempDir.path}/$imageName';
+        final imageAsList = bytes.buffer.asUint8List();
+        file = await File(imageDataPath).create();
+        file.writeAsBytesSync(imageAsList);
+        args = <String, dynamic>{
+          "message": "$message $url $trailingText".trim(),
+          "image": imageName
+        };
+      } else {
+        args = <String, dynamic>{
+          "message": "$message $url $trailingText".trim(),
+          "image": imagePath
+        };
+      }
     }
     final String? version = await _channel.invokeMethod('shareSms', args);
     return version;
@@ -180,12 +220,11 @@ class SocialShare {
     } else {
       if (imagePath != null) {
         File file = File(imagePath);
-        Uint8List bytes = file.readAsBytesSync();
-        var imagedata = bytes.buffer.asUint8List();
+        final bytes = file.readAsBytesSync();
         final tempDir = await getTemporaryDirectory();
-        String imageName = 'stickerAsset.png';
-        final Uint8List imageAsList = imagedata;
+        final imageName = 'stickerAsset.png';
         final imageDataPath = '${tempDir.path}/$imageName';
+        final imageAsList = bytes.buffer.asUint8List();
         file = await File(imageDataPath).create();
         file.writeAsBytesSync(imageAsList);
         args = <String, dynamic>{"image": imageName, "content": contentText};
