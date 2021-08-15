@@ -4,9 +4,12 @@
 //
 
 #import "SocialSharePlugin.h"
+#import <Photos/Photos.h>
 #include <objc/runtime.h>
 
-@implementation SocialSharePlugin
+@implementation SocialSharePlugin{
+     UIDocumentInteractionController* _dic;
+}
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"social_share" binaryMessenger:[registrar messenger]];
   SocialSharePlugin* instance = [[SocialSharePlugin alloc] init];
@@ -82,6 +85,29 @@
        } else {
            result(@"not supported or no facebook installed");
        }
+    } else if ([@"shareInstagramFeed" isEqualToString:call.method]) {
+    NSString *stickerImage = call.arguments[@"imagePath"];
+    NSURL *urlScheme = [NSURL URLWithString:@"instagram://app"];
+     if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
+        UIImage *imageToUse = [UIImage imageWithContentsOfFile:stickerImage];
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAssetChangeRequest *changeRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:imageToUse];
+            NSString *assetPlaceholder = changeRequest.placeholderForCreatedAsset.localIdentifier;
+            NSString *shareURL = [NSString stringWithFormat:@"instagram://library?LocalIdentifier=%@", assetPlaceholder];
+            NSURL *instagramLink = [NSURL URLWithString:shareURL];
+            [[UIApplication sharedApplication] openURL:instagramLink options:@{} completionHandler:nil];
+        } completionHandler:^(BOOL success, NSError *error) {
+            if (success) {
+                result(@"sharing");
+            }
+            else {
+                result(@"write image error");
+            }
+        }];
+      } else {
+          result(@"not supported or no instagram installed");
+      }
+
     } else if ([@"shareFacebookStory" isEqualToString:call.method]) {
         NSString *stickerImage = call.arguments[@"stickerImage"];
         NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
