@@ -1,3 +1,7 @@
+## 2.2.0
+
+- Update android to target 31
+
 ## 2.1.1
 
 - Val reassign error fix
