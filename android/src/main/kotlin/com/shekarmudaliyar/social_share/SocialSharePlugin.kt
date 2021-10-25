@@ -92,7 +92,18 @@ class SocialSharePlugin(private val registrar: Registrar):  MethodCallHandler {
                 registrar.activeContext().startActivity(intent)
                 result.success("success")
             } else {
-                result.success("error")
+                try {
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "image/*"
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//    shareIntent.putExtra("com.facebook.lite.extra.APPLICATION_ID", appId)
+
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, stickerImageFile)
+                    shareIntent.setPackage("com.facebook.lite")
+                    activity.startActivity(shareIntent)
+                }catch (e:Exception){
+                    result.error("failure to share on Lite",e.message,"Failure on fbLite");
+                }
             }
         } else if (call.method == "shareOptions") {
             //native share options
