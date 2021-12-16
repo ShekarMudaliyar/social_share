@@ -1,3 +1,8 @@
+## 2.2.1
+
+- migrated to android v2 embedding
+- imporved null safety
+
 ## 2.1.1
 
 - Val reassign error fix
