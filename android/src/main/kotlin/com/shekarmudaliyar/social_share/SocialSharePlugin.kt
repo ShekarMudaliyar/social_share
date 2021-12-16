@@ -72,17 +72,21 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             // Create the new Intent using the 'Send' action.
             val backgroundImage: String? = call.argument("imagePath")
             //check if background image is also provided
-            val backfile = File(registrar.activeContext().cacheDir, backgroundImage)
-            val backgroundImageFile = FileProvider.getUriForFile(registrar.activeContext(), registrar.activeContext().applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
+            val backfile = File(activeContext!!.cacheDir, backgroundImage)
+            val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
             val share = Intent(Intent.ACTION_SEND)
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             share.setType("image/*")
             share.putExtra(Intent.EXTRA_STREAM, backgroundImageFile)
             val chooserIntent: Intent = Intent.createChooser(share, "Share to")
             // Instantiate activity and verify it will resolve implicit intent
-            val activity: Activity = registrar.activity()
-            activity.grantUriPermission("com.instagram.android", backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            registrar.activeContext().startActivity(chooserIntent)
-            result.success(true)
+            activity!!.grantUriPermission("com.instagram.android", backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (activity!!.packageManager.resolveActivity(chooserIntent, 0) != null) {
+                activeContext!!.startActivity(chooserIntent)
+                result.success("success")
+            } else {
+                result.success("error")
+            }
         } else if (call.method == "shareFacebookStory") {
             //share on facebook story
             val stickerImage: String? = call.argument("stickerImage")
