@@ -5,21 +5,21 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.net.Uri
-import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import androidx.core.content.FileProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
 
-class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
+class SocialSharePlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
     private var activeContext: Context? = null
@@ -42,7 +42,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             val backgroundTopColor: String? = call.argument("backgroundTopColor")
             val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
             val attributionURL: String? = call.argument("attributionURL")
-            val file =  File(activeContext!!.cacheDir,stickerImage)
+            val file = File(activeContext!!.cacheDir, stickerImage)
             val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
 
             val intent = Intent("com.instagram.share.ADD_TO_STORY")
@@ -52,9 +52,9 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.putExtra("interactive_asset_uri", stickerImageFile)
             if (backgroundImage != null) {
                 //check if background image is also provided
-                val backfile =  File(activeContext!!.cacheDir,backgroundImage)
+                val backfile = File(activeContext!!.cacheDir, backgroundImage)
                 val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
-                intent.setDataAndType(backgroundImageFile,"image/*")
+                intent.setDataAndType(backgroundImageFile, "image/*")
             }
             intent.putExtra("content_url", attributionURL)
             intent.putExtra("top_background_color", backgroundTopColor)
@@ -74,17 +74,23 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             //check if background image is also provided
             val backfile = File(activeContext!!.cacheDir, backgroundImage)
             val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
+
+
             val share = Intent(Intent.ACTION_SEND)
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            share.setType("image/*")
+            share.type = "image/*"
             share.putExtra(Intent.EXTRA_STREAM, backgroundImageFile)
             val chooserIntent: Intent = Intent.createChooser(share, "Share to")
+            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
             // Instantiate activity and verify it will resolve implicit intent
             activity!!.grantUriPermission("com.instagram.android", backgroundImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            if (activity!!.packageManager.resolveActivity(chooserIntent, 0) != null) {
+
+            try {
                 activeContext!!.startActivity(chooserIntent)
+//                startActivity(activeContext!!, chooserIntent, Bundle())
                 result.success("success")
-            } else {
+            } catch (e: Exception) {
                 result.success("error")
             }
         } else if (call.method == "shareFacebookStory") {
@@ -95,7 +101,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             val attributionURL: String? = call.argument("attributionURL")
             val appId: String? = call.argument("appId")
 
-            val file =  File(activeContext!!.cacheDir,stickerImage)
+            val file = File(activeContext!!.cacheDir, stickerImage)
             val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
             val intent = Intent("com.facebook.stories.ADD_TO_STORY")
             intent.type = "image/*"
@@ -124,12 +130,12 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
 
             if (image != null) {
                 //check if  image is also provided
-                val imagefile =  File(activeContext!!.cacheDir,image)
+                val imagefile = File(activeContext!!.cacheDir, image)
                 val imageFileUri = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
                 intent.type = "image/*"
                 intent.putExtra(Intent.EXTRA_STREAM, imageFileUri)
             } else {
-                intent.type = "text/plain";
+                intent.type = "text/plain"
             }
 
             intent.putExtra(Intent.EXTRA_TEXT, content)
@@ -145,7 +151,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
         } else if (call.method == "copyToClipboard") {
             //copies content onto the clipboard
             val content: String? = call.argument("content")
-            val clipboard =context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboard = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("", content)
             clipboard.setPrimaryClip(clip)
             result.success(true)
@@ -209,7 +215,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             //creating a mutable map of apps
             var apps: MutableMap<String, Boolean> = mutableMapOf()
             //assigning package manager
-            val pm: PackageManager =context!!.packageManager
+            val pm: PackageManager = context!!.packageManager
             //get a list of installed apps.
             val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
             //intent to check sms app exists
