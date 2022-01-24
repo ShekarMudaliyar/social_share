@@ -281,6 +281,14 @@
             NSArray *objectsToShare = @[content];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
             UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+          
+            // Check if user is on iPad and present popover
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+               if ([activityVC respondsToSelector:@selector(popoverPresentationController)]) {
+                  activityVC.popoverPresentationController.sourceView = controller.view;
+               }
+            }
+          
             [controller presentViewController:activityVC animated:YES completion:nil];
             result([NSNumber numberWithBool:YES]);
         } else {
@@ -294,6 +302,14 @@
             NSArray *objectsToShare = @[content, imgShare];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
             UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
+          
+            // Check if user is on iPad and present popover
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+               if ([activityVC respondsToSelector:@selector(popoverPresentationController)]) {
+                  activityVC.popoverPresentationController.sourceView = controller.view;
+               }
+            }
+            
             [controller presentViewController:activityVC animated:YES completion:nil];
             result([NSNumber numberWithBool:YES]);
         }
