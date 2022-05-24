@@ -18,6 +18,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.File
+import java.net.URLEncoder
 
 class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
@@ -159,9 +160,10 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             }
         } else if (call.method == "shareTwitter") {
             //shares content on twitter
-            val text: String? = call.argument("captionText")
-            val url: String? = call.argument("url")
-            val trailingText: String? = call.argument("trailingText")
+            val text: String? = URLEncoder.encode(call.argument("captionText"), "utf-8")
+            val url: String? = URLEncoder.encode(call.argument("url"), "utf-8")
+            val trailingText: String? = URLEncoder.encode(call.argument("trailingText"), "utf-8")
+
             val urlScheme = "http://www.twitter.com/intent/tweet?text=$text$url$trailingText"
             Log.d("log",urlScheme)
             val intent = Intent(Intent.ACTION_VIEW)

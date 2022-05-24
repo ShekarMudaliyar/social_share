@@ -118,10 +118,7 @@ class SocialShare {
       modifiedUrl = Uri.parse(url ?? '').toString();
     }
     if (hashtags != null && hashtags.isNotEmpty) {
-      String tags = "";
-      hashtags.forEach((f) {
-        tags += ("%23" + f.toString() + " ").toString();
-      });
+      final tags = hashtags.map((t) => '#$t ').join(' ');
       args = <String, dynamic>{
         "captionText": captionText + "\n" + tags.toString(),
         "url": modifiedUrl,
