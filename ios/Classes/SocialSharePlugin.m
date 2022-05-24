@@ -126,12 +126,11 @@
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareTwitter" isEqualToString:call.method]) {
         // NSString *assetImage = call.arguments[@"assetImage"];
-        NSString *captionText = call.arguments[@"captionText"];
-        NSString *urlstring = call.arguments[@"url"];
-        NSString *trailingText = call.arguments[@"trailingText"];
+        NSString *captionText = [call.arguments[@"captionText"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *urlstring = [call.arguments[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *trailingText = [call.arguments[@"trailingText"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
-        NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString: urlTextEscaped];
+        NSURL *url = [NSURL URLWithString: urlstring];
         NSURL *urlScheme = [NSURL URLWithString:@"twitter://"];
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
             //check if twitter app exists
