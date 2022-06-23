@@ -5,6 +5,7 @@
 
 #import "SocialSharePlugin.h"
 #include <objc/runtime.h>
+#import <Social/Social.h>
 
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -125,61 +126,46 @@
         pasteboard.string = content;
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareTwitter" isEqualToString:call.method]) {
-        // NSString *assetImage = call.arguments[@"assetImage"];
-        NSString *captionText = call.arguments[@"captionText"];
-        NSString *urlstring = call.arguments[@"url"];
-        NSString *trailingText = call.arguments[@"trailingText"];
-
-        NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString: urlTextEscaped];
-        NSURL *urlScheme = [NSURL URLWithString:@"twitter://"];
-        if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-            //check if twitter app exists
-            //check if it contains a link
-            if ( [ [url absoluteString]  length] == 0 ) {
-                NSString *urlSchemeTwitter = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                NSURL *urlSchemeSend = [NSURL URLWithString:urlSchemeTwitter];
-                if (@available(iOS 10.0, *)) {
-                    [[UIApplication sharedApplication] openURL:urlSchemeSend options:@{} completionHandler:nil];
-                    result(@"sharing");
-                } else {
-                  result(@"this only supports iOS 10+");
-                }
-            } else {
-                //check if trailing text equals null
-                if ( [ trailingText   length] == 0 ) {
-                    //if trailing text is null
-                    NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                    //appending url with normal text and url scheme
-                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
-
-                    //final urlscheme
-                    NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
-                    } else {
-                        result(@"this only supports iOS 10+");
-                    }
-                } else {
-                    //if trailing text is not null
-                    NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                    //appending url with normal text and url scheme
-                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
-                    NSString *finalurl = [urlWithLink stringByAppendingString:trailingText];
-                    //final urlscheme
-                    NSURL *urlSchemeMsg = [NSURL URLWithString:finalurl];
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
-                    } else {
-                        result(@"this only supports iOS 10+");
-                    }
-                }
-            }
-        } else {
-            result(@"cannot find Twitter app");
+        
+        if([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]]) {
+            result(@"failure");
         }
+        
+        NSString *captionText = call.arguments[@"captionText"];
+        NSString *assetImage = call.arguments[@"imagePath"];
+        UIImage *image = [[UIImage alloc] initWithContentsOfFile:assetImage];
+         SLComposeViewController *mySLComposerSheet;
+        
+        
+        if([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+         {
+             mySLComposerSheet = [[SLComposeViewController alloc] init];
+         }//initiate the Social Controller
+         mySLComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter]; //Tell him with what social plattform to use it, e.g. facebook or twitter
+         [mySLComposerSheet setInitialText:[NSString stringWithFormat:captionText,mySLComposerSheet.serviceType]]; //the message you want to post
+        NSData *imgData = UIImageJPEGRepresentation(image, 0.8);
+        image = [UIImage imageWithData:imgData];
+         [mySLComposerSheet addImage:image];
+             [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:mySLComposerSheet animated:YES completion:nil];
+        
+             [mySLComposerSheet setCompletionHandler:^(SLComposeViewControllerResult result_) {
+             NSString *output;
+             switch (result_) {
+             case SLComposeViewControllerResultCancelled:
+             output = @"Action Cancelled";
+                     result(@"failure");
+             break;
+             case SLComposeViewControllerResultDone:
+             output = @"Post Successfull";
+                     result(@"success");
+             break;
+             default:
+             break;
+             }
+            //check if everything worked properly. Give out a message on the state.
+//             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter" message:output delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+//             [alert show];
+             }];
     } else if ([@"shareSms" isEqualToString:call.method]) {
         NSString *msg = call.arguments[@"message"];
         NSString *urlstring = call.arguments[@"urlLink"];
