@@ -132,11 +132,13 @@ class _MyAppState extends State<MyApp> {
                 ),
                 RaisedButton(
                   onPressed: () async {
+                    final file = await ImagePicker().pickImage(
+                      source: ImageSource.gallery,
+                    );
                     SocialShare.shareTwitter(
-                      "This is Social Share twitter example",
+                      "This is Social Share twitter example with link. https://google.com/#/hello cool!!",
                       hashtags: ["hello", "world", "foo", "bar"],
-                      url: "https://google.com/#/hello",
-                      trailingText: "\nhello",
+                      imagePath: file?.path ?? 'hello.jepg',
                     ).then((data) {
                       print(data);
                     });
