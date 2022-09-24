@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/social_share.iml" filepath="$PROJECT_DIR$/.idea/modules/social_share.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/social_share.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/social_share.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/social_share.main.iml" filepath="$PROJECT_DIR$/.idea/modules/social_share.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/social_share.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/social_share.unitTest.iml" />
     </modules>
   </component>
 </project>

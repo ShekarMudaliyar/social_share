@@ -27,6 +27,12 @@ With this plugin you can share on instagram stories and facebook stories and als
                 package="your package...">
 ```
 
+#### Add this permission in the `android/app/src/main/AndroidManifest.xml` if you want to know what apps are installed on device:
+
+```
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+```
+
 #### Add this piece of code in the `manifest/application` in the `android/app/src/main/AndroidManifest.xml`:
 
 ```
