@@ -33,15 +33,15 @@
         NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{@"com.instagram.sharedSticker.stickerImage" : imgShare,
                                                                                                  @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
                                                                                                  @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                                                                                 @"com.instagram.sharedSticker.contentURL" : attributionURL,
-                                                                                                 @"com.instagram.sharedSticker.appID" : appID}];
+                                                                                                 @"com.instagram.sharedSticker.contentURL" : attributionURL
+                                                                                                 }];
         //if you have a background image
         UIImage *imgBackgroundShare;
         if ([fileManager fileExistsAtPath: backgroundImage]) {
             imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
             [pasteboardItems setObject:imgBackgroundShare forKey:@"com.instagram.sharedSticker.backgroundImage"];
         }
-        NSURL *urlScheme = [NSURL URLWithString:@"instagram-stories://share"];
+        NSURL *urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"instagram-stories://share?source_application=%@", appID]];
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
 
             

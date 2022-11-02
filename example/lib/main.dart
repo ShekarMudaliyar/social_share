@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
 
-  String facebookId = "208464406031286";
+  String facebookId = "xxxxxxx";
 
   @override
   void initState() {

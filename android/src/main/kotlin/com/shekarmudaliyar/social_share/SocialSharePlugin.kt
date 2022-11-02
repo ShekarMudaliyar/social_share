@@ -59,7 +59,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
                 intent.setDataAndType(backgroundImageFile,"image/*")
             }
-            intent.putExtra("com.instagram.platform.extra.APPLICATION_ID", appId)
+            intent.putExtra("source_application", appId)
             intent.putExtra("content_url", attributionURL)
             intent.putExtra("top_background_color", backgroundTopColor)
             intent.putExtra("bottom_background_color", backgroundBottomColor)
