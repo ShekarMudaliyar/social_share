@@ -15,108 +15,92 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"shareInstagramStory" isEqualToString:call.method]) {
-        //Sharing story on instagram
         NSString *stickerImage = call.arguments[@"stickerImage"];
         NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
         NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
         NSString *attributionURL = call.arguments[@"attributionURL"];
         NSString *backgroundImage = call.arguments[@"backgroundImage"];
-        //getting image from file
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+        NSString *appID = [dict objectForKey:@"FacebookAppID"];
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        BOOL isFileExist = [fileManager fileExistsAtPath: stickerImage];
         UIImage *imgShare;
-        if (isFileExist) {
-          //if image exists
-          imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
+        if ( [fileManager fileExistsAtPath: stickerImage]) {
+           imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
         }
-        //url Scheme for instagram story
+        
+        // Assign background image asset and attribution link URL to pasteboard
+        NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{@"com.instagram.sharedSticker.stickerImage" : imgShare,
+                                                                                                 @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
+                                                                                                 @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
+                                                                                                 @"com.instagram.sharedSticker.contentURL" : attributionURL,
+                                                                                                 @"com.instagram.sharedSticker.appID" : appID}];
+        //if you have a background image
+        UIImage *imgBackgroundShare;
+        if ([fileManager fileExistsAtPath: backgroundImage]) {
+            imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
+            [pasteboardItems setObject:imgBackgroundShare forKey:@"com.instagram.sharedSticker.backgroundImage"];
+        }
         NSURL *urlScheme = [NSURL URLWithString:@"instagram-stories://share"];
-        //adding data to send to instagram story
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-           //if instagram is installed and the url can be opened
-           if ( [ backgroundImage  length] == 0 ) {
-              //If you dont have a background image
-             // Assign background image asset and attribution link URL to pasteboard
-             NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.stickerImage" : imgShare,
-                                            @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
-                                            @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                            @"com.instagram.sharedSticker.contentURL" : attributionURL
-             }];
-             if (@available(iOS 10.0, *)) {
-             NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-             // This call is iOS 10+, can use 'setItems' depending on what versions you support
-             [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
-                 
-               [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                 //if success
-                 result(@"sharing");
-           } else {
-               result(@"this only supports iOS 10+");
-           }
-           
-       } else {
-           //if you have a background image
-           NSFileManager *fileManager = [NSFileManager defaultManager];
-           BOOL isFileExist = [fileManager fileExistsAtPath: backgroundImage];
-           UIImage *imgBackgroundShare;
-           if (isFileExist) {
-               imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
-           }
-               NSArray *pasteboardItems = @[@{@"com.instagram.sharedSticker.backgroundImage" : imgBackgroundShare,
-                                              @"com.instagram.sharedSticker.stickerImage" : imgShare,
-                                              @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
-                                              @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                              @"com.instagram.sharedSticker.contentURL" : attributionURL
-                          }];
-                          if (@available(iOS 10.0, *)) {
-                          NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-                          // This call is iOS 10+, can use 'setItems' depending on what versions you support
-                          [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
-                              
-                            [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                              result(@"sharing");
-                        } else {
-                            result(@"this only supports iOS 10+");
-                        }
-           }
-       } else {
-           result(@"not supported or no facebook installed");
-       }
+
+            
+            if (@available(iOS 10.0, *)) {
+            NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
+            // This call is iOS 10+, can use 'setItems' depending on what versions you support
+            [[UIPasteboard generalPasteboard] setItems:@[pasteboardItems] options:pasteboardOptions];
+
+            [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
+              result(@"success");
+            } else {
+                result(@"error");
+            }
+        } else {
+            result(@"error");
+        }
     } else if ([@"shareFacebookStory" isEqualToString:call.method]) {
         NSString *stickerImage = call.arguments[@"stickerImage"];
         NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
         NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
         NSString *attributionURL = call.arguments[@"attributionURL"];
+        NSString *backgroundImage = call.arguments[@"backgroundImage"];
         NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
         NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
         NSString *appID = [dict objectForKey:@"FacebookAppID"];
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        BOOL isFileExist = [fileManager fileExistsAtPath: stickerImage];
         UIImage *imgShare;
-        if (isFileExist) {
+        if ( [fileManager fileExistsAtPath: stickerImage]) {
            imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
+        }
+        
+        // Assign background image asset and attribution link URL to pasteboard
+        NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{@"com.facebook.sharedSticker.stickerImage" : imgShare,
+                                                                                                 @"com.facebook.sharedSticker.backgroundTopColor" : backgroundTopColor,
+                                                                                                 @"com.facebook.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
+                                                                                                 @"com.facebook.sharedSticker.contentURL" : attributionURL,
+                                                                                                 @"com.facebook.sharedSticker.appID" : appID}];
+        //if you have a background image
+        UIImage *imgBackgroundShare;
+        if ([fileManager fileExistsAtPath: backgroundImage]) {
+            imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
+            [pasteboardItems setObject:imgBackgroundShare forKey:@"com.facebook.sharedSticker.backgroundImage"];
         }
         NSURL *urlScheme = [NSURL URLWithString:@"facebook-stories://share"];
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
 
-            // Assign background image asset and attribution link URL to pasteboard
-            NSArray *pasteboardItems = @[@{@"com.facebook.sharedSticker.stickerImage" : imgShare,
-                                           @"com.facebook.sharedSticker.backgroundTopColor" : backgroundTopColor,
-                                           @"com.facebook.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                           @"com.facebook.sharedSticker.contentURL" : attributionURL,
-                                           @"com.facebook.sharedSticker.appID" : appID}];
+            
             if (@available(iOS 10.0, *)) {
             NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
             // This call is iOS 10+, can use 'setItems' depending on what versions you support
-            [[UIPasteboard generalPasteboard] setItems:pasteboardItems options:pasteboardOptions];
+            [[UIPasteboard generalPasteboard] setItems:@[pasteboardItems] options:pasteboardOptions];
 
             [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-              result(@"sharing");
+              result(@"success");
             } else {
-                result(@"this only supports iOS 10+");
+                result(@"error");
             }
         } else {
-            result(@"not supported or no facebook installed");
+            result(@"error");
         }
     } else if ([@"copyToClipboard" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
@@ -125,61 +109,18 @@
         pasteboard.string = content;
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareTwitter" isEqualToString:call.method]) {
-        // NSString *assetImage = call.arguments[@"assetImage"];
         NSString *captionText = call.arguments[@"captionText"];
-        NSString *urlstring = call.arguments[@"url"];
-        NSString *trailingText = call.arguments[@"trailingText"];
-
-        NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURL *url = [NSURL URLWithString: urlTextEscaped];
-        NSURL *urlScheme = [NSURL URLWithString:@"twitter://"];
-        if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-            //check if twitter app exists
-            //check if it contains a link
-            if ( [ [url absoluteString]  length] == 0 ) {
-                NSString *urlSchemeTwitter = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                NSURL *urlSchemeSend = [NSURL URLWithString:urlSchemeTwitter];
-                if (@available(iOS 10.0, *)) {
-                    [[UIApplication sharedApplication] openURL:urlSchemeSend options:@{} completionHandler:nil];
-                    result(@"sharing");
-                } else {
-                  result(@"this only supports iOS 10+");
-                }
-            } else {
-                //check if trailing text equals null
-                if ( [ trailingText   length] == 0 ) {
-                    //if trailing text is null
-                    NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                    //appending url with normal text and url scheme
-                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
-
-                    //final urlscheme
-                    NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
-                    } else {
-                        result(@"this only supports iOS 10+");
-                    }
-                } else {
-                    //if trailing text is not null
-                    NSString *urlSchemeSms = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-                    //appending url with normal text and url scheme
-                    NSString *urlWithLink = [urlSchemeSms stringByAppendingString:[url absoluteString]];
-                    NSString *finalurl = [urlWithLink stringByAppendingString:trailingText];
-                    //final urlscheme
-                    NSURL *urlSchemeMsg = [NSURL URLWithString:finalurl];
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
-                    } else {
-                        result(@"this only supports iOS 10+");
-                    }
-                }
-            }
+        
+        NSString *urlSchemeTwitter = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
+        NSString* urlTextEscaped = [urlSchemeTwitter stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSURL *urlSchemeSend = [NSURL URLWithString:urlTextEscaped];
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:urlSchemeSend options:@{} completionHandler:nil];
+            result(@"success");
         } else {
-            result(@"cannot find Twitter app");
+            result(@"error");
         }
+    
     } else if ([@"shareSms" isEqualToString:call.method]) {
         NSString *msg = call.arguments[@"message"];
         NSString *urlstring = call.arguments[@"urlLink"];
@@ -197,12 +138,12 @@
             if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
                 if (@available(iOS 10.0, *)) {
                     [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                    result(@"sharing");
+                    result(@"success");
                 } else {
-                    result(@"this only supports iOS 10+");
+                    result(@"error");
                 }
             } else {
-                result(@"cannot find Sms app");
+                result(@"error");
             }
         } else {
             //if it does contains a link
@@ -218,12 +159,12 @@
                 if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
                     if (@available(iOS 10.0, *)) {
                         [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
+                        result(@"success");
                     } else {
-                        result(@"this only supports iOS 10+");
+                        result(@"error");
                     }
                 } else {
-                    result(@"cannot find Sms app");
+                    result(@"error");
                 }
             } else {
                 //if trailing text is not null
@@ -237,12 +178,13 @@
                 if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
                     if (@available(iOS 10.0, *)) {
                         [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"sharing");
+                        result(@"success");
                     } else {
-                        result(@"this only supports iOS 10+");
+                        result(@"error");
                     }
                 } else {
-                    result(@"cannot find Sms app");
+                    result(@"error");
+
                 }
             }
         
@@ -256,9 +198,9 @@
         NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
             [[UIApplication sharedApplication] openURL: whatsappURL];
-            result(@"sharing");
+            result(@"success");
         } else {
-            result(@"cannot open whatsapp");
+            result(@"error");
         }
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareTelegram" isEqualToString:call.method]) {
@@ -267,9 +209,9 @@
         NSURL * telegramURL = [NSURL URLWithString:[urlScheme stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         if ([[UIApplication sharedApplication] canOpenURL: telegramURL]) {
             [[UIApplication sharedApplication] openURL: telegramURL];
-            result(@"sharing");
+            result(@"success");
         } else {
-            result(@"cannot open Telegram");
+            result(@"error");
         }
         result([NSNumber numberWithBool:YES]);
     } else if ([@"shareOptions" isEqualToString:call.method]) {
