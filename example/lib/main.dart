@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Instagram",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -152,7 +152,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Facebook",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -214,7 +214,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Twitter",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -243,15 +243,15 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Clipboard",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
                       ElevatedButton(
-                        child: Icon(Icons.text_fields),
+                        child: Icon(Icons.image),
                         onPressed: () async {
                           SocialShare.copyToClipboard(
-                            text: "This is Social Share plugin",
+                            image: await screenshot(),
                           ).then((data) {
                             print(data);
                           });
@@ -259,10 +259,10 @@ class _MyAppState extends State<MyApp> {
                       ),
                       SizedBox(width: 20),
                       ElevatedButton(
-                        child: Icon(Icons.image),
+                        child: Icon(Icons.text_fields),
                         onPressed: () async {
                           SocialShare.copyToClipboard(
-                            image: await screenshot(),
+                            text: "This is Social Share plugin",
                           ).then((data) {
                             print(data);
                           });
@@ -275,7 +275,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "SMS",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -298,7 +298,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Share Options",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -317,7 +317,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Whatsapp",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -338,7 +338,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Telegram",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
@@ -359,7 +359,7 @@ class _MyAppState extends State<MyApp> {
                       Expanded(
                         child: Text(
                           "Get all Apps",
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                       SizedBox(width: 40),
