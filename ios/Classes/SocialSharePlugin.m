@@ -14,37 +14,75 @@
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    if ([@"shareInstagramStory" isEqualToString:call.method]) {
+    if ([@"shareInstagramStory" isEqualToString:call.method] || [@"shareFacebookStory" isEqualToString:call.method]) {
+
+        NSString *destination;
+        NSString *stories;
+        if ([@"shareInstagramStory" isEqualToString:call.method]) {
+            destination = @"com.instagram.sharedSticker";
+            stories = @"instagram-stories";
+        } else {
+            destination = @"com.facebook.sharedSticker";
+            stories = @"facebook-stories";
+        }
+
         NSString *stickerImage = call.arguments[@"stickerImage"];
         NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
         NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
         NSString *attributionURL = call.arguments[@"attributionURL"];
         NSString *backgroundImage = call.arguments[@"backgroundImage"];
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        NSString *appID = [dict objectForKey:@"FacebookAppID"];
+        NSString *backgroundVideo = call.arguments[@"backgroundVideo"];
+        
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        UIImage *imgShare;
+
+        NSString *appId = call.arguments[@"appId"];
+        if ([backgroundTopColor isKindOfClass:[NSNull class]]) {
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+            NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
+            appId = [dict objectForKey:@"FacebookAppID"];
+        }
+        
+        NSData *imgShare;
         if ( [fileManager fileExistsAtPath: stickerImage]) {
-           imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
+           imgShare = [[NSData alloc] initWithContentsOfFile:stickerImage];
         }
         
         // Assign background image asset and attribution link URL to pasteboard
-        NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{@"com.instagram.sharedSticker.stickerImage" : imgShare,
-                                                                                                 @"com.instagram.sharedSticker.backgroundTopColor" : backgroundTopColor,
-                                                                                                 @"com.instagram.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                                                                                 @"com.instagram.sharedSticker.contentURL" : attributionURL
-                                                                                                 }];
-        //if you have a background image
-        UIImage *imgBackgroundShare;
-        if ([fileManager fileExistsAtPath: backgroundImage]) {
-            imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
-            [pasteboardItems setObject:imgBackgroundShare forKey:@"com.instagram.sharedSticker.backgroundImage"];
+        NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{[NSString stringWithFormat:@"%@.stickerImage",destination] : imgShare}];
+        
+        if (![backgroundTopColor isKindOfClass:[NSNull class]]) {
+            [pasteboardItems setObject:backgroundTopColor forKey:[NSString stringWithFormat:@"%@.backgroundTopColor",destination]];
         }
-        NSURL *urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"instagram-stories://share?source_application=%@", appID]];
+        
+        if (![backgroundBottomColor isKindOfClass:[NSNull class]]) {
+            [pasteboardItems setObject:backgroundBottomColor forKey:[NSString stringWithFormat:@"%@.backgroundBottomColor",destination]];
+        }
+        
+        if (![attributionURL isKindOfClass:[NSNull class]]) {
+            [pasteboardItems setObject:attributionURL forKey:[NSString stringWithFormat:@"%@.contentURL",destination]];
+        }
+        
+        if (![appId isKindOfClass:[NSNull class]] && [@"shareFacebookStory" isEqualToString:call.method]) {
+            [pasteboardItems setObject:appId forKey:[NSString stringWithFormat:@"%@.appID",destination]];
+        }
+        
+        //if you have a background image
+        NSData *imgBackgroundShare;
+        if ([fileManager fileExistsAtPath: backgroundImage]) {
+            imgBackgroundShare = [[NSData alloc] initWithContentsOfFile:backgroundImage];
+            [pasteboardItems setObject:imgBackgroundShare forKey:[NSString stringWithFormat:@"%@.backgroundImage",destination]];
+        }
+        //if you have a background video
+        NSData *videoBackgroundShare;
+        if ([fileManager fileExistsAtPath: backgroundVideo]) {
+            videoBackgroundShare = [[NSData alloc] initWithContentsOfFile:backgroundVideo options:NSDataReadingMappedIfSafe error:nil];
+            [pasteboardItems setObject:videoBackgroundShare forKey:[NSString stringWithFormat:@"%@.backgroundVideo",destination]];
+        }
+
+        NSURL *urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"%@://share?source_application=%@", stories,appId]];
+        
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
 
-            
             if (@available(iOS 10.0, *)) {
             NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
             // This call is iOS 10+, can use 'setItems' depending on what versions you support
@@ -58,56 +96,25 @@
         } else {
             result(@"error");
         }
-    } else if ([@"shareFacebookStory" isEqualToString:call.method]) {
-        NSString *stickerImage = call.arguments[@"stickerImage"];
-        NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
-        NSString *backgroundBottomColor = call.arguments[@"backgroundBottomColor"];
-        NSString *attributionURL = call.arguments[@"attributionURL"];
-        NSString *backgroundImage = call.arguments[@"backgroundImage"];
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path];
-        NSString *appID = [dict objectForKey:@"FacebookAppID"];
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        UIImage *imgShare;
-        if ( [fileManager fileExistsAtPath: stickerImage]) {
-           imgShare = [[UIImage alloc] initWithContentsOfFile:stickerImage];
-        }
+    }
+    else if ([@"copyToClipboard" isEqualToString:call.method]) {
         
-        // Assign background image asset and attribution link URL to pasteboard
-        NSMutableDictionary *pasteboardItems = [[NSMutableDictionary alloc]initWithDictionary: @{@"com.facebook.sharedSticker.stickerImage" : imgShare,
-                                                                                                 @"com.facebook.sharedSticker.backgroundTopColor" : backgroundTopColor,
-                                                                                                 @"com.facebook.sharedSticker.backgroundBottomColor" : backgroundBottomColor,
-                                                                                                 @"com.facebook.sharedSticker.contentURL" : attributionURL,
-                                                                                                 @"com.facebook.sharedSticker.appID" : appID}];
-        //if you have a background image
-        UIImage *imgBackgroundShare;
-        if ([fileManager fileExistsAtPath: backgroundImage]) {
-            imgBackgroundShare = [[UIImage alloc] initWithContentsOfFile:backgroundImage];
-            [pasteboardItems setObject:imgBackgroundShare forKey:@"com.facebook.sharedSticker.backgroundImage"];
-        }
-        NSURL *urlScheme = [NSURL URLWithString:@"facebook-stories://share"];
-        if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-
-            
-            if (@available(iOS 10.0, *)) {
-            NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-            // This call is iOS 10+, can use 'setItems' depending on what versions you support
-            [[UIPasteboard generalPasteboard] setItems:@[pasteboardItems] options:pasteboardOptions];
-
-            [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-              result(@"success");
-            } else {
-                result(@"error");
-            }
-        } else {
-            result(@"error");
-        }
-    } else if ([@"copyToClipboard" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         //assigning content to pasteboard
-        pasteboard.string = content;
-        result([NSNumber numberWithBool:YES]);
+         if (![content isKindOfClass:[NSNull class]]) {
+            pasteboard.string = content;
+        }
+        //assigning image to pasteboard
+        NSString *image = call.arguments[@"image"];
+        UIImage *imageData;
+        if ([[NSFileManager defaultManager] fileExistsAtPath: image]) {
+            imageData = [[UIImage alloc] initWithContentsOfFile:image];
+            pasteboard.image = imageData;
+        }
+        
+        result(@"success");
+        
     } else if ([@"shareTwitter" isEqualToString:call.method]) {
         NSString *captionText = call.arguments[@"captionText"];
         

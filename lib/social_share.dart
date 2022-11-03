@@ -12,8 +12,8 @@ class SocialShare {
     required String imagePath,
     String? backgroundTopColor,
     String? backgroundBottomColor,
+    String? backgroundResourcePath,
     String? attributionURL,
-    String? backgroundImagePath,
   }) async {
     return shareMetaStory(
       appId: appId,
@@ -22,7 +22,7 @@ class SocialShare {
       backgroundTopColor: backgroundTopColor,
       backgroundBottomColor: backgroundBottomColor,
       attributionURL: attributionURL,
-      backgroundImagePath: backgroundImagePath,
+      backgroundResourcePath: backgroundResourcePath,
     );
   }
 
@@ -31,8 +31,8 @@ class SocialShare {
     String? imagePath,
     String? backgroundTopColor,
     String? backgroundBottomColor,
+    String? backgroundResourcePath,
     String? attributionURL,
-    String? backgroundImagePath,
   }) async {
     return shareMetaStory(
       appId: appId,
@@ -41,7 +41,7 @@ class SocialShare {
       backgroundTopColor: backgroundTopColor,
       backgroundBottomColor: backgroundBottomColor,
       attributionURL: attributionURL,
-      backgroundImagePath: backgroundImagePath,
+      backgroundResourcePath: backgroundResourcePath,
     );
   }
 
@@ -52,19 +52,19 @@ class SocialShare {
     String? backgroundTopColor,
     String? backgroundBottomColor,
     String? attributionURL,
-    String? backgroundImagePath,
+    String? backgroundResourcePath,
   }) async {
     var _imagePath = imagePath;
-    var _backgroundImagePath = backgroundImagePath;
+    var _backgroundResourcePath = backgroundResourcePath;
 
     if (Platform.isAndroid) {
       var stickerFilename = "stickerAsset.png";
       await reSaveImage(imagePath, stickerFilename);
       _imagePath = stickerFilename;
-      if (backgroundImagePath != null) {
-        var backgroundImageFilename = "backgroundAsset.jpg";
-        await reSaveImage(backgroundImagePath, backgroundImageFilename);
-        _backgroundImagePath = backgroundImageFilename;
+      if (backgroundResourcePath != null) {
+        var backgroundImageFilename = backgroundResourcePath.split("/").last;
+        await reSaveImage(backgroundResourcePath, backgroundImageFilename);
+        _backgroundResourcePath = backgroundImageFilename;
       }
     }
 
@@ -76,8 +76,13 @@ class SocialShare {
       "appId": appId
     };
 
-    if (_backgroundImagePath != null) {
-      args["backgroundImage"] = _backgroundImagePath;
+    if (_backgroundResourcePath != null) {
+      var extension = _backgroundResourcePath.split(".").last;
+      if (["png", "jpg", "jpeg"].contains(extension.toLowerCase())) {
+        args["backgroundImage"] = _backgroundResourcePath;
+      } else {
+        args["backgroundVideo"] = _backgroundResourcePath;
+      }
     }
 
     final String? response = await _channel.invokeMethod(platform, args);
@@ -145,11 +150,13 @@ class SocialShare {
     return version;
   }
 
-  static Future<bool?> copyToClipboard(content) async {
-    final Map<String, String> args = <String, String>{
-      "content": content.toString()
+  static Future<String?> copyToClipboard({String? text, String? image}) async {
+    final Map<String, dynamic> args = <String, dynamic>{
+      "content": text,
+      "image": image,
     };
-    final bool? response = await _channel.invokeMethod('copyToClipboard', args);
+    final String? response =
+        await _channel.invokeMethod('copyToClipboard', args);
     return response;
   }
 

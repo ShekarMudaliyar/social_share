@@ -15,7 +15,7 @@
 	</array>
 	<!-- Your Facebook App ID -->
 	<key>FacebookAppID</key>
-	<string>xxxxxxx</string>
+	<string>208464406031286</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
