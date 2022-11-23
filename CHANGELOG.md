@@ -1,3 +1,13 @@
+## 2.3.1
+
+### Changes for the new version is done by [dpacchi](https://github.com/dpacchi) 🙌🙌
+
+- Support for image background in both Facebook and Instagram stories
+- Support for video background in both Facebook and Instagram stories
+- Facebook App Id support in instagram stories (required starting december 2022)
+- Clipboard sharing fixes
+- Example updated and fixed using the latest flutter release
+
 ## 2.2.1
 
 - migrated to android v2 embedding

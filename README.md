@@ -190,6 +190,6 @@ On Android 6, Share to Instagram Stories may not open Instagram app or load the 
 
 # Buy me a :coffee: !!
 
-((More coffee == more code) == more fast updates)
+((More coffee == more code) == faster updates)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/b1naryishere/10)
