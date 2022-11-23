@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
@@ -15,22 +15,54 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String facebookId = "xxxxxxxx";
+
+  var imageBackground = "image-background.jpg";
+  var videoBackground = "video-background.mp4";
+  String imageBackgroundPath = "";
+  String videoBackgroundPath = "";
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    copyBundleAssets();
   }
 
-  Future<void> initPlatformState() async {
-    String platformVersion;
+  Future<void> copyBundleAssets() async {
+    imageBackgroundPath = await copyImage(imageBackground);
+    videoBackgroundPath = await copyImage(videoBackground);
+  }
 
-    if (!mounted) return;
+  Future<String> copyImage(String filename) async {
+    final tempDir = await getTemporaryDirectory();
+    ByteData bytes = await rootBundle.load("assets/$filename");
+    final assetPath = '${tempDir.path}/$filename';
+    File file = await File(assetPath).create();
+    await file.writeAsBytes(bytes.buffer.asUint8List());
+    return file.path;
+  }
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+  Future<String?> pickImage() async {
+    final file = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    var path = file?.path;
+    if (path == null) {
+      return null;
+    }
+    return file?.path;
+  }
+
+  Future<String?> screenshot() async {
+    var data = await screenshotController.capture();
+    if (data == null) {
+      return null;
+    }
+    final tempDir = await getTemporaryDirectory();
+    final assetPath = '${tempDir.path}/temp.png';
+    File file = await File(assetPath).create();
+    await file.writeAsBytes(data);
+    return file.path;
   }
 
   ScreenshotController screenshotController = ScreenshotController();
@@ -40,160 +72,309 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Social Share'),
         ),
         body: Screenshot(
           controller: screenshotController,
           child: Container(
             color: Colors.white,
             alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Running on: $_platformVersion\n',
-                  textAlign: TextAlign.center,
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    final file = await ImagePicker().pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    SocialShare.shareInstagramStory(
-                      file.path,
-                      backgroundTopColor: "#ffffff",
-                      backgroundBottomColor: "#000000",
-                      attributionURL: "https://deep-link-url",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Share On Instagram Story"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      final directory = await getApplicationDocumentsDirectory();
-                      final file = await File('${directory.path}/temp.png').create();
-                      await file.writeAsBytes(image);
-
-                      SocialShare.shareInstagramStory(
-                        file.path,
-                        backgroundTopColor: "#ffffff",
-                        backgroundBottomColor: "#000000",
-                        attributionURL: "https://deep-link-url",
-                        backgroundImagePath: file.path,
-                      ).then((data) {
-                        print(data);
-                      });
-                    });
-                  },
-                  child: Text("Share On Instagram Story with background"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      final directory = await getApplicationDocumentsDirectory();
-                      final file = await File('${directory.path}/temp.png').create();
-                      await file.writeAsBytes(image);
-                      //facebook appId is mandatory for andorid or else share won't work
-                      Platform.isAndroid
-                          ? SocialShare.shareFacebookStory(
-                        file.path,
-                        "#ffffff",
-                        "#000000",
-                        "https://google.com",
-                        appId: "xxxxxxxxxxxxx",
-                      ).then((data) {
-                        print(data);
-                      })
-                          : SocialShare.shareFacebookStory(
-                        file.path,
-                        "#ffffff",
-                        "#000000",
-                        "https://google.com",
-                      ).then((data) {
-                        print(data);
-                      });
-                    });
-                  },
-                  child: Text("Share On Facebook Story"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.copyToClipboard(
-                      "This is Social Share plugin",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Copy to clipboard"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.shareTwitter(
-                      "This is Social Share twitter example",
-                      hashtags: ["hello", "world", "foo", "bar"],
-                      url: "https://google.com/#/hello",
-                      trailingText: "\nhello",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Share on twitter"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.shareSms(
-                      "This is Social Share Sms example",
-                      url: "\nhttps://google.com/",
-                      trailingText: "\nhello",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Share on Sms"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    await screenshotController.capture().then((image) async {
-                      SocialShare.shareOptions("Hello world").then((data) {
-                        print(data);
-                      });
-                    });
-                  },
-                  child: Text("Share Options"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.shareWhatsapp(
-                      "Hello World \n https://google.com",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Share on Whatsapp"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.shareTelegram(
-                      "Hello World \n https://google.com",
-                    ).then((data) {
-                      print(data);
-                    });
-                  },
-                  child: Text("Share on Telegram"),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    SocialShare.checkInstalledAppsForShare().then((data) {
-                      print(data.toString());
-                    });
-                  },
-                  child: Text("Get all Apps"),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Instagram",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.gradient),
+                        onPressed: () async {
+                          var path = await pickImage();
+                          if (path == null) {
+                            return;
+                          }
+                          SocialShare.shareInstagramStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundTopColor: "#ffffff",
+                            backgroundBottomColor: "#000000",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        child: Icon(Icons.image),
+                        onPressed: () async {
+                          var path = await pickImage();
+                          if (path == null) {
+                            return;
+                          }
+                          SocialShare.shareInstagramStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundResourcePath: imageBackgroundPath,
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        child: Icon(Icons.videocam),
+                        onPressed: () async {
+                          var path = await screenshot();
+                          if (path == null) {
+                            return;
+                          }
+                          SocialShare.shareInstagramStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundResourcePath: videoBackgroundPath,
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Facebook",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.gradient),
+                        onPressed: () async {
+                          var path = await pickImage();
+                          if (path == null) {
+                            return;
+                          }
+                          SocialShare.shareFacebookStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundTopColor: "#ffffff",
+                            backgroundBottomColor: "#000000",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        child: Icon(Icons.image),
+                        onPressed: () async {
+                          var path = await pickImage();
+                          if (path == null) {
+                            return;
+                          }
+                          SocialShare.shareFacebookStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundResourcePath: imageBackgroundPath,
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        child: Icon(Icons.videocam),
+                        onPressed: () async {
+                          var path = await screenshot();
+                          if (path == null) {
+                            return;
+                          }
+                          await SocialShare.shareFacebookStory(
+                            appId: facebookId,
+                            imagePath: path,
+                            backgroundResourcePath: videoBackgroundPath,
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Twitter",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.text_fields),
+                        onPressed: () async {
+                          SocialShare.shareTwitter(
+                            "This is Social Share twitter example with link.  ",
+                            hashtags: [
+                              "SocialSharePlugin",
+                              "world",
+                              "foo",
+                              "bar"
+                            ],
+                            url: "https://google.com/hello",
+                            trailingText: "cool!!",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Clipboard",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.image),
+                        onPressed: () async {
+                          SocialShare.copyToClipboard(
+                            image: await screenshot(),
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        child: Icon(Icons.text_fields),
+                        onPressed: () async {
+                          SocialShare.copyToClipboard(
+                            text: "This is Social Share plugin",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "SMS",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.text_fields),
+                        onPressed: () async {
+                          SocialShare.shareSms(
+                            "This is Social Share Sms example",
+                            url: "https://google.com/",
+                            trailingText: "\nhello",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Share Options",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.text_fields),
+                        onPressed: () async {
+                          SocialShare.shareOptions("Hello world").then((data) {
+                            print(data);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Whatsapp",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        onPressed: () async {
+                          SocialShare.shareWhatsapp(
+                            "Hello World \n https://google.com",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                        child: Icon(Icons.text_fields),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Telegram",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        onPressed: () async {
+                          SocialShare.shareTelegram(
+                            "Hello World \n https://google.com",
+                          ).then((data) {
+                            print(data);
+                          });
+                        },
+                        child: Icon(Icons.text_fields),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Get all Apps",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(width: 40),
+                      ElevatedButton(
+                        child: Icon(Icons.text_fields),
+                        onPressed: () async {
+                          SocialShare.checkInstalledAppsForShare().then((data) {
+                            print(data.toString());
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

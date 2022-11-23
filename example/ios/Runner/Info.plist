@@ -15,7 +15,7 @@
 	</array>
 	<!-- Your Facebook App ID -->
 	<key>FacebookAppID</key>
-	<string>xxxxxxxxxxxx</string>
+	<string>xxxxxxxx</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -64,5 +64,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>
