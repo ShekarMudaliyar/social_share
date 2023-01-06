@@ -78,9 +78,10 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             
+            var stickerImage: Uri? = null
             if (stickerImagePath!=null) {
                 val file =  File(activeContext!!.cacheDir,stickerImagePath)
-                val stickerImage = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
+                stickerImage = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
                 intent.putExtra("interactive_asset_uri", stickerImage)
             }
 
