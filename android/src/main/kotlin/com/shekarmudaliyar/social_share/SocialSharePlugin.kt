@@ -63,12 +63,12 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 intentString = "com.facebook.stories.ADD_TO_STORY"
             }
 
-            val stickerImage: String? = call.argument("stickerImage")
+            val stickerImagePath: String? = call.argument("stickerImagePath")
             val backgroundTopColor: String? = call.argument("backgroundTopColor")
             val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
             val attributionURL: String? = call.argument("attributionURL")
-            val backgroundImage: String? = call.argument("backgroundImage")
-            val backgroundVideo: String? = call.argument("backgroundVideo")
+            val backgroundImagePath: String? = call.argument("backgroundImagePath")
+            val backgroundVideoPath: String? = call.argument("backgroundVideoPath")
 
             val appId: String? = call.argument("appId")
 
@@ -78,10 +78,10 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             
-            if (stickerImage!=null) {
-                val file =  File(activeContext!!.cacheDir,stickerImage)
-                val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
-                intent.putExtra("interactive_asset_uri", stickerImageFile)
+            if (stickerImagePath!=null) {
+                val file =  File(activeContext!!.cacheDir,stickerImagePath)
+                val stickerImage = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
+                intent.putExtra("interactive_asset_uri", stickerImage)
             }
 
             if (call.method == "shareFacebookStory") {
@@ -90,18 +90,18 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 intent.putExtra("source_application", appId)
             }
 
-            if (backgroundImage!=null) {
+            if (backgroundImagePath!=null) {
                 //check if background image is also provided
-                val backfile =  File(activeContext!!.cacheDir,backgroundImage)
-                val backgroundImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
-                intent.setDataAndType(backgroundImageFile,"image/*")
+                val backfile =  File(activeContext!!.cacheDir,backgroundImagePath)
+                val backgroundImage = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
+                intent.setDataAndType(backgroundImage,"image/*")
             }
 
-            if (backgroundVideo!=null) {
+            if (backgroundVideoPath!=null) {
                 //check if background video is also provided
-                val backfile =  File(activeContext!!.cacheDir,backgroundVideo)
-                val backgroundVideoFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
-                intent.setDataAndType(backgroundVideoFile,"video/*")
+                val backfile =  File(activeContext!!.cacheDir,backgroundVideoPath)
+                val backgroundVideo = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", backfile)
+                intent.setDataAndType(backgroundVideo,"video/*")
             }
 
             intent.putExtra("content_url", attributionURL)
