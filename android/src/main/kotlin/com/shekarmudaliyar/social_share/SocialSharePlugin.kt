@@ -87,8 +87,6 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
 
             if (call.method == "shareFacebookStory") {
                 intent.putExtra("com.facebook.platform.extra.APPLICATION_ID", appId)
-            } else {
-                intent.putExtra("source_application", appId)
             }
 
             if (backgroundImagePath!=null) {
@@ -105,6 +103,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 intent.setDataAndType(backgroundVideo,"video/*")
             }
 
+            intent.putExtra("source_application", appId)
             intent.putExtra("content_url", attributionURL)
             intent.putExtra("top_background_color", backgroundTopColor)
             intent.putExtra("bottom_background_color", backgroundBottomColor)

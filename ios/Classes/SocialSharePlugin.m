@@ -17,19 +17,17 @@
     if ([@"shareInstagramStory" isEqualToString:call.method] || [@"shareFacebookStory" isEqualToString:call.method]) {
 
         NSString *appID = call.arguments[@"appId"];
-
-        // Updated to reflect that Docs on Facebook/Instagram now show a different url scheme vs instagram, i.e FB does no longer take source_application queryParam
-        // FB Docs: https://developers.facebook.com/docs/sharing/sharing-to-stories/ios-developers
-        // Insta Docs: https://developers.facebook.com/docs/instagram/sharing-to-stories 
         NSString *destination;
-        NSURL *urlScheme;
+        NSString *stories;
         if ([@"shareInstagramStory" isEqualToString:call.method]) {
             destination = @"com.instagram.sharedSticker";
-            urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"instagram-stories://share?source_application=%@", appID]]; 
+            stories = @"instagram-stories";
         } else {
             destination = @"com.facebook.sharedSticker";
-            urlScheme = [NSURL URLWithString:@"facebook-stories://share"];
+            stories = @"facebook-stories";
         }
+
+        NSURL *urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"%@://share?source_application=%@", stories, appID]];
 
         NSString *stickerImagePath = call.arguments[@"stickerImagePath"];
         NSString *backgroundTopColor = call.arguments[@"backgroundTopColor"];
