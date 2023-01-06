@@ -9,7 +9,7 @@ class SocialShare {
 
   static Future<String?> shareInstagramStory({
     required String appId,
-    required String imagePath,
+    String? imagePath,
     String? backgroundTopColor,
     String? backgroundBottomColor,
     String? backgroundResourcePath,
@@ -69,7 +69,7 @@ class SocialShare {
     }
 
     Map<String, dynamic> args = <String, dynamic>{
-      "stickerImage": _imagePath,
+      "stickerImagePath": _imagePath,
       "backgroundTopColor": backgroundTopColor,
       "backgroundBottomColor": backgroundBottomColor,
       "attributionURL": attributionURL,
@@ -79,9 +79,9 @@ class SocialShare {
     if (_backgroundResourcePath != null) {
       var extension = _backgroundResourcePath.split(".").last;
       if (["png", "jpg", "jpeg"].contains(extension.toLowerCase())) {
-        args["backgroundImage"] = _backgroundResourcePath;
+        args["backgroundImagePath"] = _backgroundResourcePath;
       } else {
-        args["backgroundVideo"] = _backgroundResourcePath;
+        args["backgroundVideoPath"] = _backgroundResourcePath;
       }
     }
 
