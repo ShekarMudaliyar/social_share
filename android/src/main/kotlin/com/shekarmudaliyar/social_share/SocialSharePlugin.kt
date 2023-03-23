@@ -136,7 +136,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             activeContext!!.startActivity(chooserIntent)
-            result.success("success")
+            result.success(true)
 
         } else if (call.method == "copyToClipboard") {
 
