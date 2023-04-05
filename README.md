@@ -82,13 +82,6 @@ SocialShare.shareInstagramStory(imageFile.path, "#ffffff",
                               "#000000", "https://deep-link-url");
 ```
 
-#### shareInstagramStorywithBackground
-
-```
- SocialShare.shareInstagramStorywithBackground(image.path, "https://deep-link-url",
-                              backgroundImagePath: backgroundimage.path);
-```
-
 #### shareFacebookStory
 
 For iOS
