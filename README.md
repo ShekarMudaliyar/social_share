@@ -35,7 +35,7 @@ With this plugin you can share on instagram stories and facebook stories and als
 		<package android:name="com.whatsapp" />
         	<package android:name="com.whatsapp.w4b" />
 		<package android:name="org.telegram.messenger" />
-<queries>
+</queries>
 		
 ```
 
