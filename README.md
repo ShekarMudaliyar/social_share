@@ -21,15 +21,27 @@ With this plugin you can share on instagram stories and facebook stories and als
 
 ##### For example:
 
-```
+```xml
         <manifest xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 package="your package...">
 ```
+#### for android 11 and above Add this queries to AnroidManfist
+```xml
+<queries>
+		<!-- social share -->
+		<package android:name="com.instagram.android" />
+		<package android:name="com.twitter.android" />
+		<package android:name="com.whatsapp" />
+        	<package android:name="com.whatsapp.w4b" />
+		<package android:name="org.telegram.messenger" />
+</queries>
+		
+```
 
 #### Add this piece of code in the `manifest/application` in the `android/app/src/main/AndroidManifest.xml`:
 
-```
+```xml
  		<provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.com.shekarmudaliyar.social_share"
@@ -44,12 +56,13 @@ With this plugin you can share on instagram stories and facebook stories and als
 
 #### Create a xml file named `filepaths.xml` in the `app/src/main/res/xml` folder and paste this code in the file :
 
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <cache-path name="image" path="/"/>
 </paths>
 ```
+
 
 ### iOS Configuration
 
