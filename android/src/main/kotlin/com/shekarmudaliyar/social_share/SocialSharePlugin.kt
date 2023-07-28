@@ -120,17 +120,19 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             val image: String? = call.argument("image")
             val intent = Intent()
             intent.action = Intent.ACTION_SEND
-
-            if (image!=null) {
-                //check if  image is also provided
-                val imagefile =  File(activeContext!!.cacheDir,image)
-                val imageFileUri = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
-                intent.type = "image/*"
-                intent.putExtra(Intent.EXTRA_STREAM,imageFileUri)
-            } else {
-                intent.type = "text/plain";
-            }
-
+            
+            
+            //check if  image is also provided
+            val imagefile =  File(activeContext!!.cacheDir,image)
+            val imageFileUri = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
+            intent.type = "image/*"
+            
+            intentShareFile.clipData = ClipData.Builder().apply {
+		    setLabel("Result")
+		    setMimeTypes(arrayOf(intent.type))
+		    addItem(ClipData.Item(imageFileUri))
+		    }.build()
+            intent.putExtra(Intent.EXTRA_STREAM, imageFileUri)
             intent.putExtra(Intent.EXTRA_TEXT, content)
             
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
