@@ -47,9 +47,8 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         activeContext = if (activity != null) activity!!.applicationContext else context!!
         
-        val stickerImage: String? = call.argument("stickerImage")
-        val file =  File(activeContext!!.cacheDir,stickerImage)
-        val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
+        
+
 
         if (call.method == "shareInstagramStory" || call.method == "shareFacebookStory") {
 
@@ -66,7 +65,8 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
                 appName = "com.facebook.katana";
                 intentString = "com.facebook.stories.ADD_TO_STORY"
             }
-
+            
+            val stickerImage: String? = call.argument("stickerImage")
             val backgroundTopColor: String? = call.argument("backgroundTopColor")
             val backgroundBottomColor: String? = call.argument("backgroundBottomColor")
             val attributionURL: String? = call.argument("attributionURL")
@@ -75,7 +75,8 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
 
             
             val appId: String? = call.argument("appId")
-
+            val file =  File(activeContext!!.cacheDir,stickerImage)
+            val stickerImageFile = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", file)
             val intent = Intent(intentString)
 
             intent.type = "image/*"
