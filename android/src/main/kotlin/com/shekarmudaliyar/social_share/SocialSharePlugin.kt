@@ -137,15 +137,13 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             val chooserIntent: Intent = Intent.createChooser(intent, "Share Image")
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             
-            val resInfoList = activity!!.packageManager.queryIntentActivities(chooserIntent, PackageManager.MATCH_DEFAULT_ONLY)
-            
-            for (resolveInfo in resInfoList) {
-            val packageName = resolveInfo.activityInfo.packageName
-            activity!!.grantUriPermission(packageName, stickerImageFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            activity!!.grantUriPermission(appName, stickerImageFile, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (activity!!.packageManager.resolveActivity(chooserIntent, 0) != null) {
+                activeContext!!.startActivity(chooserIntent)
+                result.success(true)
+            } else {
+                result.success(false)
             }
-
-            activeContext!!.startActivity(chooserIntent)
-            result.success(true)
 
         } else if (call.method == "copyToClipboard") {
 
