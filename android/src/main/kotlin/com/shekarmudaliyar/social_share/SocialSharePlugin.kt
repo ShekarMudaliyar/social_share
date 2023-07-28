@@ -132,11 +132,18 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
 
             //create chooser intent to launch intent
             //source: "share" package by flutter (https://github.com/flutter/plugins/blob/master/packages/share/)
-            val chooserIntent: Intent = Intent.createChooser(intent, null /* dialog title optional */)
+            val chooserIntent: Intent = Intent.createChooser(intent, "Share Image")
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            
+            List<ResolveInfo> resInfoList = this.getPackageManager().queryIntentActivities(chooserIntent, PackageManager.MATCH_DEFAULT_ONLY);
+            
+            for ( resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+	    this.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+	    }
 
             activeContext!!.startActivity(chooserIntent)
-            result.success("success")
+            result.success(true)
 
         } else if (call.method == "copyToClipboard") {
 
