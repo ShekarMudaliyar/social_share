@@ -127,11 +127,7 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             val imageFileUri = FileProvider.getUriForFile(activeContext!!, activeContext!!.applicationContext.packageName + ".com.shekarmudaliyar.social_share", imagefile)
             intent.type = "image/*"
             
-            intent.clipData = ClipData.Builder().apply {
-		    setLabel("Result")
-		    setMimeTypes(arrayOf(intent.type))
-		    addItem(ClipData.Item(imageFileUri))
-		    }.build()
+            intent.clipData = ClipData.newUri(activeContext!!.getContentResolver(), "Image", imageFileUri)
             intent.putExtra(Intent.EXTRA_STREAM, imageFileUri)
             intent.putExtra(Intent.EXTRA_TEXT, content)
             
