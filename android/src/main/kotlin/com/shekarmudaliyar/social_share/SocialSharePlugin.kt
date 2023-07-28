@@ -132,13 +132,14 @@ class SocialSharePlugin:FlutterPlugin, MethodCallHandler, ActivityAware {
             }
 
             intent.putExtra(Intent.EXTRA_TEXT, content)
+            
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             //create chooser intent to launch intent
             //source: "share" package by flutter (https://github.com/flutter/plugins/blob/master/packages/share/)
             val chooserIntent: Intent = Intent.createChooser(intent, "Share Image")
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             
-            chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             activeContext!!.startActivity(chooserIntent)
             result.success(true)
 
