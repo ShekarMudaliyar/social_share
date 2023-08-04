@@ -240,7 +240,7 @@
             if (isFileExist) {
                 imgShare = [[UIImage alloc] initWithContentsOfFile:image];
             }
-            NSArray *objectsToShare = @[imgShare];
+            NSArray *objectsToShare = @[imgShare, content];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
             UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
             [controller presentViewController:activityVC animated:YES completion:nil];
