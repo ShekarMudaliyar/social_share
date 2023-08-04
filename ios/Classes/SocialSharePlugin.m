@@ -234,16 +234,10 @@
             result([NSNumber numberWithBool:YES]);
         } else {
             //when image file is included
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            BOOL isFileExist = [fileManager fileExistsAtPath: image];
-            UIImage *imgShare;
-            if (isFileExist) {
-                imgShare = [[UIImage alloc] initWithContentsOfFile:image];
-            }
+            UIImage *imgShare = [UIImage imageNamed:image];
             NSArray *objectsToShare = @[imgShare, content];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-            UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-            [controller presentViewController:activityVC animated:YES completion:nil];
+            [self presentViewController:activityVC animated:YES completion:nil];
             result([NSNumber numberWithBool:YES]);
         }
     } else if ([@"checkInstalledApps" isEqualToString:call.method]) {
