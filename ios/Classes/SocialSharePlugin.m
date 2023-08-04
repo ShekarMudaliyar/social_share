@@ -235,7 +235,7 @@
         } else {
             //when image file is included
             UIImage *imgShare = [UIImage imageNamed:image];
-            NSArray *objectsToShare = @[imgShare, content];
+            NSArray *objectsToShare = @[imgShare];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
             [self presentViewController:activityVC animated:YES completion:nil];
             result([NSNumber numberWithBool:YES]);
