@@ -37,6 +37,10 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+
+    if (project.android.hasProperty("namespace")) {
+        namespace "com.shekarmudaliyar.social_share"
+    }
 }
 
 dependencies {
