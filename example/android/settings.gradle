@@ -1,9 +1,9 @@
 pluginManagement {
     def flutterSdkPath = {
         def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
-        def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        file('local.properties').withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty('flutter.sdk')
+        assert flutterSdkPath != null, 'flutter.sdk not set in local.properties'
         return flutterSdkPath
     }()
 
@@ -21,4 +21,4 @@ plugins {
     id 'com.android.application' version '8.3.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
 }
-include ":app"
+include ':app'
