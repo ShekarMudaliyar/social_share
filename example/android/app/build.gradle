@@ -1,7 +1,7 @@
 plugins {
-    id "com.android.application"
-    id "kotlin-android" 
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
@@ -9,7 +9,7 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-} 
+}
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -20,7 +20,6 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
-
 
 android {
     compileSdkVersion 33
@@ -35,15 +34,19 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.shekarmudaliyar.social_share_example"
+        applicationId 'com.shekarmudaliyar.social_share_example'
         multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
-
+    
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
@@ -53,14 +56,11 @@ android {
     }
 
     compileOptions {
-    // Flag to enable support for the new language APIs
-    coreLibraryDesugaringEnabled true
-    // Sets Java compatibility to Java 8
-    sourceCompatibility JavaVersion.VERSION_11
-    targetCompatibility JavaVersion.VERSION_11
-  }
-  kotlinOptions {
-        jvmTarget = '11'
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -69,9 +69,8 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.tools:desugar_jdk_libs:2.0.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
