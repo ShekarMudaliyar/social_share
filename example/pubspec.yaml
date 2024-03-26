@@ -13,7 +13,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   screenshot: ^2.3.0
-  path_provider: ^2.0.2
+  path_provider: ^2.1.2
   http:
   image_picker: ^1.0.7
 
