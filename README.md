@@ -50,6 +50,17 @@ With this plugin you can share on instagram stories and facebook stories and als
     <cache-path name="image" path="/"/>
 </paths>
 ```
+#### Add preferred social media to avoid issues on Android 12
+        <!-- social share -->
+		<package android:name="com.instagram.android" />
+		<package android:name="com.twitter.android" />
+		<package android:name="com.whatsapp" />
+		<package android:name="com.whatsapp.w4b" />
+		<package android:name="org.telegram.messenger" />
+#### GOOGLE Play Notice:
+if you want to deploy your app in google play with this package
+you should mention that you gather other apps information ephemerally in Data Safety Form
+
 
 ### iOS Configuration
 

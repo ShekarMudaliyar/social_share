@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:async';
-import 'package:screenshot/screenshot.dart';
 import 'package:social_share/social_share.dart';
 
 void main() => runApp(MyApp());
@@ -54,18 +54,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<String?> screenshot() async {
-    var data = await screenshotController.capture();
-    if (data == null) {
-      return null;
-    }
+    // var data = await screenshotController.capture();
+    // if (data == null) {
+    //   return null;
+    // }
     final tempDir = await getTemporaryDirectory();
     final assetPath = '${tempDir.path}/temp.png';
     File file = await File(assetPath).create();
-    await file.writeAsBytes(data);
+    // await file.writeAsBytes(data);
     return file.path;
   }
 
-  ScreenshotController screenshotController = ScreenshotController();
+  // ScreenshotController screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +74,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Social Share'),
         ),
-        body: Screenshot(
-          controller: screenshotController,
-          child: Container(
+        body: Container(
             color: Colors.white,
             alignment: Alignment.center,
             child: Padding(
@@ -377,7 +375,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-        ),
+       
       ),
     );
   }
