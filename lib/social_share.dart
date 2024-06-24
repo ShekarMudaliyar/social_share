@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
 
 class SocialShare {
