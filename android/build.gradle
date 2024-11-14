@@ -25,7 +25,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 34
+    namespace 'com.shekarmudaliyar.social_share'
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
