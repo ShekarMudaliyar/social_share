@@ -1,3 +1,12 @@
+## 2.5.0
+
+- Support iOS 27 / Xcode 27 and the UIScene life cycle
+- `shareOptions` presents from the Flutter view controller instead of `UIApplication.keyWindow`, and no longer crashes on iPad
+- Fix `shareWhatsapp` and `shareTelegram` on iOS 18+ (the deprecated `openURL:` is a no-op)
+- Replace deprecated percent-encoding APIs
+- Minimum iOS version is now 15.0
+- Example app migrated to the UIScene life cycle
+
 ## 2.3.1
 
 ### Changes for the new version is done by [dpacchi](https://github.com/dpacchi) 🙌🙌

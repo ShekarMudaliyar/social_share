@@ -53,6 +53,8 @@ With this plugin you can share on instagram stories and facebook stories and als
 
 ### iOS Configuration
 
+Requires iOS 15.0 or later. Supports apps using the UIScene life cycle (required when building with the iOS 27 SDK).
+
 #### Add this to your `Info.plist` to use share on instagram and facebook story
 
 ```
