@@ -160,7 +160,7 @@ class SocialShare {
     return response;
   }
 
-  static Future<bool?> shareOptions(String contentText,
+  static Future<String?> shareOptions(String contentText,
       {String? imagePath}) async {
     Map<String, dynamic> args;
 
@@ -173,7 +173,7 @@ class SocialShare {
       }
     }
     args = <String, dynamic>{"image": _imagePath, "content": contentText};
-    final bool? version = await _channel.invokeMethod('shareOptions', args);
+    final String? version = await _channel.invokeMethod('shareOptions', args);
     return version;
   }
 

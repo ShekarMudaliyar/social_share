@@ -3,14 +3,47 @@
 //  Copyright © 2019 Shekar Mudaliyar. All rights reserved.
 //
 
-#import "SocialSharePlugin.h"
+#import <social_share/SocialSharePlugin.h>
 #include <objc/runtime.h>
+
+@interface SocialSharePlugin ()
+@property(nonatomic, weak) NSObject<FlutterPluginRegistrar>* registrar;
+@end
 
 @implementation SocialSharePlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"social_share" binaryMessenger:[registrar messenger]];
   SocialSharePlugin* instance = [[SocialSharePlugin alloc] init];
+  instance.registrar = registrar;
   [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+// Resolves the topmost view controller of the Flutter view. Uses the registrar
+// instead of UIApplication.keyWindow, which is unreliable under the UIScene life cycle.
+- (UIViewController *)topViewController {
+    UIViewController *controller = self.registrar.viewController;
+    while (controller.presentedViewController != nil) {
+        controller = controller.presentedViewController;
+    }
+    return controller;
+}
+
+- (void)presentActivityItems:(NSArray *)items result:(FlutterResult)result {
+    UIViewController *controller = [self topViewController];
+    if (controller == nil) {
+        result([FlutterError errorWithCode:@"no_view_controller" message:@"Unable to find a view controller to present the share sheet" details:nil]);
+        return;
+    }
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+    // Required on iPad, where the share sheet is presented as a popover.
+    UIPopoverPresentationController *popover = activityVC.popoverPresentationController;
+    if (popover != nil) {
+        popover.sourceView = controller.view;
+        popover.sourceRect = CGRectMake(CGRectGetMidX(controller.view.bounds), CGRectGetMidY(controller.view.bounds), 0, 0);
+        popover.permittedArrowDirections = 0;
+    }
+    [controller presentViewController:activityVC animated:YES completion:nil];
+    result([NSNumber numberWithBool:YES]);
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
@@ -82,17 +115,11 @@
         NSURL *urlScheme = [NSURL URLWithString:[NSString stringWithFormat:@"%@://share?source_application=%@", stories,appId]];
         
         if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-
-            if (@available(iOS 10.0, *)) {
             NSDictionary *pasteboardOptions = @{UIPasteboardOptionExpirationDate : [[NSDate date] dateByAddingTimeInterval:60 * 5]};
-            // This call is iOS 10+, can use 'setItems' depending on what versions you support
             [[UIPasteboard generalPasteboard] setItems:@[pasteboardItems] options:pasteboardOptions];
 
             [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-              result(@"success");
-            } else {
-                result(@"error");
-            }
+            result(@"success");
         } else {
             result(@"error");
         }
@@ -119,15 +146,11 @@
         NSString *captionText = call.arguments[@"captionText"];
         
         NSString *urlSchemeTwitter = [NSString stringWithFormat:@"twitter://post?message=%@",captionText];
-        NSString* urlTextEscaped = [urlSchemeTwitter stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString* urlTextEscaped = [urlSchemeTwitter stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSURL *urlSchemeSend = [NSURL URLWithString:urlTextEscaped];
-        if (@available(iOS 10.0, *)) {
-            [[UIApplication sharedApplication] openURL:urlSchemeSend options:@{} completionHandler:nil];
-            result(@"success");
-        } else {
-            result(@"error");
-        }
-    
+        [[UIApplication sharedApplication] openURL:urlSchemeSend options:@{} completionHandler:nil];
+        result(@"success");
+
     } else if ([@"shareSms" isEqualToString:call.method]) {
         NSString *msg = call.arguments[@"message"];
         NSString *urlstring = call.arguments[@"urlLink"];
@@ -135,7 +158,7 @@
 
         NSURL *urlScheme = [NSURL URLWithString:@"sms://"];
 
-        NSString* urlTextEscaped = [urlstring stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString* urlTextEscaped = [urlstring stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         NSURL *url = [NSURL URLWithString: urlTextEscaped];
         //check if it contains a link
         if ( [ [url absoluteString]  length] == 0 ) {
@@ -143,12 +166,8 @@
             NSString *urlSchemeSms = [NSString stringWithFormat:@"sms:?&body=%@",msg];
             NSURL *urlScheme = [NSURL URLWithString:urlSchemeSms];
             if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-                if (@available(iOS 10.0, *)) {
-                    [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
-                    result(@"success");
-                } else {
-                    result(@"error");
-                }
+                [[UIApplication sharedApplication] openURL:urlScheme options:@{} completionHandler:nil];
+                result(@"success");
             } else {
                 result(@"error");
             }
@@ -164,12 +183,8 @@
                 //final urlscheme
                 NSURL *urlSchemeMsg = [NSURL URLWithString:urlWithLink];
                 if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"success");
-                    } else {
-                        result(@"error");
-                    }
+                    [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
+                    result(@"success");
                 } else {
                     result(@"error");
                 }
@@ -183,15 +198,10 @@
                 //final urlscheme
                 NSURL *urlSchemeMsg = [NSURL URLWithString:finalUrl];
                 if ([[UIApplication sharedApplication] canOpenURL:urlScheme]) {
-                    if (@available(iOS 10.0, *)) {
-                        [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
-                        result(@"success");
-                    } else {
-                        result(@"error");
-                    }
+                    [[UIApplication sharedApplication] openURL:urlSchemeMsg options:@{} completionHandler:nil];
+                    result(@"success");
                 } else {
                     result(@"error");
-
                 }
             }
         
@@ -202,36 +212,30 @@
     } else if ([@"shareWhatsapp" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
         NSString * urlWhats = [NSString stringWithFormat:@"whatsapp://send?text=%@",content];
-        NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL * whatsappURL = [NSURL URLWithString:[urlWhats stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
         if ([[UIApplication sharedApplication] canOpenURL: whatsappURL]) {
-            [[UIApplication sharedApplication] openURL: whatsappURL];
+            [[UIApplication sharedApplication] openURL:whatsappURL options:@{} completionHandler:nil];
             result(@"success");
         } else {
             result(@"error");
         }
-        result([NSNumber numberWithBool:YES]);
     } else if ([@"shareTelegram" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
         NSString * urlScheme = [NSString stringWithFormat:@"tg://msg?text=%@",content];
-        NSURL * telegramURL = [NSURL URLWithString:[urlScheme stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL * telegramURL = [NSURL URLWithString:[urlScheme stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
         if ([[UIApplication sharedApplication] canOpenURL: telegramURL]) {
-            [[UIApplication sharedApplication] openURL: telegramURL];
+            [[UIApplication sharedApplication] openURL:telegramURL options:@{} completionHandler:nil];
             result(@"success");
         } else {
             result(@"error");
         }
-        result([NSNumber numberWithBool:YES]);
     } else if ([@"shareOptions" isEqualToString:call.method]) {
         NSString *content = call.arguments[@"content"];
         NSString *image = call.arguments[@"image"];
         //checking if it contains image file
         if ([image isEqual:[NSNull null]] || [ image  length] == 0 ) {
             //when image is not included
-            NSArray *objectsToShare = @[content];
-            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-            UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-            [controller presentViewController:activityVC animated:YES completion:nil];
-            result([NSNumber numberWithBool:YES]);
+            [self presentActivityItems:@[content] result:result];
         } else {
             //when image file is included
             NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -241,10 +245,7 @@
                 imgShare = [[UIImage alloc] initWithContentsOfFile:image];
             }
             NSArray *objectsToShare = @[content, imgShare];
-            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
-            UIViewController *controller =[UIApplication sharedApplication].keyWindow.rootViewController;
-            [controller presentViewController:activityVC animated:YES completion:nil];
-            result([NSNumber numberWithBool:YES]);
+            [self presentActivityItems:objectsToShare result:result];
         }
     } else if ([@"checkInstalledApps" isEqualToString:call.method]) {
         NSMutableDictionary *installedApps = [[NSMutableDictionary alloc] init];
